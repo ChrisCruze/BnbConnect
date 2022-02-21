@@ -9,11 +9,10 @@ function Login() {
 	let history = useHistory();
 	useEffect(() => {
 		if (loading) {
-			// maybe trigger a loading screen
 			return;
 		}
 		if (user) {
-			history.push("/Dashboard");
+			history.push("/Survey");
 		}
 	}, [user, loading]);
 	return (
@@ -24,7 +23,5 @@ function Login() {
 			}}
 		/>
 	);
-
-	// return <LoginPage title={"Login"} />;
 }
 export default Login;
