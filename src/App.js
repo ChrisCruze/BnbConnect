@@ -12,7 +12,7 @@ class App extends React.Component {
 			<div id="wrapper" style={{ backgroundColor: "#fffff" }}>
 				<HashRouter>
 					<Switch>
-						<Route exact path="/" component={Dashboard} />
+						<Route exact path="/" component={Login} />
 						<Route exact path="/Dashboard" component={Dashboard} />
 						<Route exact path="/Login" component={Login} />
 						<Route exact path="/Survey" component={Survey} />

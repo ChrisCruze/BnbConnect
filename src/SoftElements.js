@@ -8140,6 +8140,7 @@ export const SuiSelectElement = ({
 	options,
 	description,
 	onChange,
+	isMulti,
 }) => {
 	return (
 		<SuiBox
@@ -8172,12 +8173,54 @@ export const SuiSelectElement = ({
 				defaultValue={defaultValue}
 				options={options}
 				onChange={onChange}
-				isMulti
+				isMulti={isMulti || true}
 			/>
 		</SuiBox>
 	);
 };
-
+export const SuiSelectElementSingle = ({
+	text,
+	defaultValue,
+	options,
+	description,
+	onChange,
+	isMulti,
+}) => {
+	return (
+		<SuiBox
+			display="flex"
+			flexDirection="column"
+			justifyContent="flex-end"
+			height="100%"
+		>
+			<SuiBox
+				mb={1}
+				ml={0.5}
+				mt={3}
+				lineHeight={0}
+				display="inline-block"
+			>
+				<SuiTypographyFormTitle text={text} />
+			</SuiBox>
+			{description != null ? (
+				<SuiBox
+					mb={1.5}
+					ml={0.5}
+					mt={0.5}
+					lineHeight={0}
+					display="inline-block"
+				>
+					<SuiTypographyFormDescription text={description} />
+				</SuiBox>
+			) : null}
+			<SuiSelect
+				defaultValue={defaultValue}
+				options={options}
+				onChange={onChange}
+			/>
+		</SuiBox>
+	);
+};
 export const SaveButton = ({ onClick }) => {
 	return (
 		<IconButton sx={navbarIconButton} size="small" onClick={onClick}>
@@ -13125,6 +13168,22 @@ const SurveyPageInput = ({ title, text, id, setValue, value }) => {
 		</Fragment>
 	);
 };
+
+const SurveyPageSelect = ({ title, text, id, options, setValue, value }) => {
+	const onChange = (value) => {
+		setValue(value);
+	};
+
+	return (
+		<SuiSelectElementSingle
+			text={title || ""}
+			description={text || ""}
+			defaultValue={value}
+			options={options}
+			onChange={onChange}
+		/>
+	);
+};
 export const BnbSurveyPage = ({ questionsArray }) => {
 	const [step, setStep] = useState(0);
 	// const [questionState, setQuestionState] = useState(questionsArray[0]);
@@ -13136,7 +13195,7 @@ export const BnbSurveyPage = ({ questionsArray }) => {
 			case "input":
 				return <SurveyPageInput {...questionDict} />;
 			case "select":
-				return <SurveyPageInput {...questionDict} />;
+				return <SurveyPageSelect {...questionDict} />;
 			default:
 				return null;
 		}
@@ -13161,7 +13220,9 @@ export const BnbSurveyPage = ({ questionsArray }) => {
 			<SuiBox py={3}>
 				<SuiBox mt={20} mb={3} textAlign="center">
 					{getQuestionContent()}
-					{BackNextButtons()}
+					{step != questionsArray.length - 1
+						? BackNextButtons()
+						: null}
 				</SuiBox>
 			</SuiBox>
 		</PayLayoutBase>

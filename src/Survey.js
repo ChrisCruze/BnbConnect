@@ -16,13 +16,15 @@ const Survey = () => {
 			history.push("/Login");
 		}
 	}, [user, loading]);
+	console.log({ user });
 	var userDict = user || { uid: "NULL" };
 	const questionsArray = [
 		{
 			title: `Welcome`,
-			text: "Please take this survey and set of questions. We'd like to know a bit more about you to make your stay better.",
+			text: "Please answer these few questions so we can make your trip better. ",
 			type: "text",
 		},
+
 		{
 			title: `Favorite Beverage`,
 			text: `Whats your favorite beverage?`,
@@ -36,18 +38,35 @@ const Survey = () => {
 			id: "trip_purpose",
 		},
 		{
-			title: `Weather Alerts`,
-			text: `Would you like weather alerts?`,
+			title: `Interest in Helping`,
+			text: `Would you be interested in helping us make the listing even better?`,
 			type: "select",
-			id: "weather_alerts",
+			id: "interested_in_helping",
+			options: [
+				{ label: "Yes", value: "yes" },
+				{ label: "No", value: "no" },
+			],
 		},
+		{
+			title: `Thanks`,
+			text: "Thats all for now!",
+			type: "text",
+		},
+		// {
+		// 	title: `Weather Alerts`,
+		// 	text: `Would you be interested in becoming an Airbnb Host?`,
+		// 	type: "select",
+		// 	id: "airbnb_host",
+		// },
 	];
 	const [questionsState, setQuestionsState] = useState({});
 	const userRef = ref(database, "users/" + String(userDict.uid) + "/");
 	useEffect(() => {
 		onValue(userRef, (snapshot) => {
 			const data = snapshot.val();
-			setQuestionsState(data);
+			if (data) {
+				setQuestionsState(data);
+			}
 		});
 	}, [user]);
 	const questionsArrayWithUpdate = useMemo(() => {
@@ -57,6 +76,10 @@ const Survey = () => {
 			const setValue = (val) => {
 				var D = {};
 				D[questionID] = val;
+				D["time_stamp"] = moment().format();
+				D["url"] = window.location.href;
+				D["user_name"] = userDict.displayName;
+				D["user_email"] = userDict.email;
 				const updatedQuestionDict = { ...questionsState, ...D };
 				set(userRef, updatedQuestionDict);
 			};
