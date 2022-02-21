@@ -14057,12 +14057,6 @@ export const BasicSignIn = ({ signInClick }) => {
 			image={""}
 		>
 			<Card>
-				<SuiBox p={3} mb={1} textAlign="center">
-					<SuiTypography variant="h5" fontWeight="medium">
-						Sign in
-					</SuiTypography>
-				</SuiBox>
-				<SuiBox mb={2}>{/* <Socials /> */}</SuiBox>
 				<SuiBox p={3}>
 					<SuiBox component="form" role="form">
 						<SuiBox mt={4} mb={1}>
@@ -14072,19 +14066,7 @@ export const BasicSignIn = ({ signInClick }) => {
 								fullWidth
 								onClick={signInClick}
 							>
-								sign in
-							</SuiButton>
-						</SuiBox>
-						<Separator />
-						<SuiBox mt={1} mb={3}>
-							<SuiButton
-								component={Link}
-								to="/authentication/sign-up/basic"
-								variant="gradient"
-								color="dark"
-								fullWidth
-							>
-								sign up
+								Sign in with Google
 							</SuiButton>
 						</SuiBox>
 					</SuiBox>
