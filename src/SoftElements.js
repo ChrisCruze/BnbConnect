@@ -109,9 +109,14 @@ import pinterest from "assets/images/logos/gray-logos/logo-pinterest.svg";
 import spotify from "assets/images/logos/gray-logos/logo-spotify.svg";
 import vodafone from "assets/images/logos/gray-logos/logo-vodafone.svg";
 
+import LinearProgress from "@mui/material/LinearProgress";
+
 import Modal from "@mui/material/Modal";
 
 import { Pie } from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
+import { Doughnut } from "react-chartjs-2";
+
 import { Col, Container, Jumbotron, Row } from "reactstrap";
 // import CountUp from "react-countup";
 // import MaterialTable from "material-table";
@@ -131,7 +136,184 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import StorageIcon from "@mui/icons-material/Storage";
 import DnsIcon from "@mui/icons-material/Dns";
 import KeyboardCommandKeyIcon from "@mui/icons-material/KeyboardCommandKey";
+import RefreshIcon from "@mui/icons-material/Refresh";
+import { DataGrid } from "@mui/x-data-grid";
 
+// import CircularSlider from "react-circular-slider-svg";
+
+function Document({ color, size }) {
+	return (
+		<svg
+			width={size}
+			height={size}
+			viewBox="0 0 42 42"
+			version="1.1"
+			xmlns="http://www.w3.org/2000/svg"
+			xmlnsXlink="http://www.w3.org/1999/xlink"
+		>
+			<title>document</title>
+			<g
+				id="Basic-Elements"
+				stroke="none"
+				strokeWidth="1"
+				fill="none"
+				fillRule="evenodd"
+			>
+				<g
+					id="Rounded-Icons"
+					transform="translate(-1870.000000, -591.000000)"
+					fill={colors[color] ? colors[color].main : colors.dark.main}
+					fillRule="nonzero"
+				>
+					<g
+						id="Icons-with-opacity"
+						transform="translate(1716.000000, 291.000000)"
+					>
+						<g
+							id="document"
+							transform="translate(154.000000, 300.000000)"
+						>
+							<path
+								d="M40,40 L36.3636364,40 L36.3636364,3.63636364 L5.45454545,3.63636364 L5.45454545,0 L38.1818182,0 C39.1854545,0 40,0.814545455 40,1.81818182 L40,40 Z"
+								id="Path"
+								opacity="0.603585379"
+							/>
+							<path
+								d="M30.9090909,7.27272727 L1.81818182,7.27272727 C0.814545455,7.27272727 0,8.08727273 0,9.09090909 L0,41.8181818 C0,42.8218182 0.814545455,43.6363636 1.81818182,43.6363636 L30.9090909,43.6363636 C31.9127273,43.6363636 32.7272727,42.8218182 32.7272727,41.8181818 L32.7272727,9.09090909 C32.7272727,8.08727273 31.9127273,7.27272727 30.9090909,7.27272727 Z M18.1818182,34.5454545 L7.27272727,34.5454545 L7.27272727,30.9090909 L18.1818182,30.9090909 L18.1818182,34.5454545 Z M25.4545455,27.2727273 L7.27272727,27.2727273 L7.27272727,23.6363636 L25.4545455,23.6363636 L25.4545455,27.2727273 Z M25.4545455,20 L7.27272727,20 L7.27272727,16.3636364 L25.4545455,16.3636364 L25.4545455,20 Z"
+								id="Shape"
+							/>
+						</g>
+					</g>
+				</g>
+			</g>
+		</svg>
+	);
+}
+
+// Setting default values for the props of Document
+Document.defaultProps = {
+	color: "dark",
+	size: "16px",
+};
+
+function Settings({ color, size }) {
+	return (
+		<svg
+			width={size}
+			height={size}
+			viewBox="0 0 42 42"
+			version="1.1"
+			xmlns="http://www.w3.org/2000/svg"
+			xmlnsXlink="http://www.w3.org/1999/xlink"
+		>
+			<title>settings</title>
+			<g
+				id="Basic-Elements"
+				stroke="none"
+				strokeWidth="1"
+				fill="none"
+				fillRule="evenodd"
+			>
+				<g
+					id="Rounded-Icons"
+					transform="translate(-2020.000000, -442.000000)"
+					fill={colors[color] ? colors[color].main : colors.dark.main}
+					fillRule="nonzero"
+				>
+					<g
+						id="Icons-with-opacity"
+						transform="translate(1716.000000, 291.000000)"
+					>
+						<g
+							id="settings"
+							transform="translate(304.000000, 151.000000)"
+						>
+							<polygon
+								id="Path"
+								opacity="0.596981957"
+								points="18.0883333 15.7316667 11.1783333 8.82166667 13.3333333 6.66666667 6.66666667 0 0 6.66666667 6.66666667 13.3333333 8.82166667 11.1783333 15.315 17.6716667"
+							/>
+							<path
+								d="M31.5666667,23.2333333 C31.0516667,23.2933333 30.53,23.3333333 30,23.3333333 C29.4916667,23.3333333 28.9866667,23.3033333 28.48,23.245 L22.4116667,30.7433333 L29.9416667,38.2733333 C32.2433333,40.575 35.9733333,40.575 38.275,38.2733333 L38.275,38.2733333 C40.5766667,35.9716667 40.5766667,32.2416667 38.275,29.94 L31.5666667,23.2333333 Z"
+								id="Path"
+								opacity="0.596981957"
+							/>
+							<path
+								d="M33.785,11.285 L28.715,6.215 L34.0616667,0.868333333 C32.82,0.315 31.4483333,0 30,0 C24.4766667,0 20,4.47666667 20,10 C20,10.99 20.1483333,11.9433333 20.4166667,12.8466667 L2.435,27.3966667 C0.95,28.7083333 0.0633333333,30.595 0.00333333333,32.5733333 C-0.0583333333,34.5533333 0.71,36.4916667 2.11,37.89 C3.47,39.2516667 5.27833333,40 7.20166667,40 C9.26666667,40 11.2366667,39.1133333 12.6033333,37.565 L27.1533333,19.5833333 C28.0566667,19.8516667 29.01,20 30,20 C35.5233333,20 40,15.5233333 40,10 C40,8.55166667 39.685,7.18 39.1316667,5.93666667 L33.785,11.285 Z"
+								id="Path"
+							/>
+						</g>
+					</g>
+				</g>
+			</g>
+		</svg>
+	);
+}
+
+// Setting default values for the props of Settings
+Settings.defaultProps = {
+	color: "dark",
+	size: "16px",
+};
+
+function Cube({ color, size }) {
+	return (
+		<svg
+			width={size}
+			height={size}
+			viewBox="0 0 42 42"
+			version="1.1"
+			xmlns="http://www.w3.org/2000/svg"
+			xmlnsXlink="http://www.w3.org/1999/xlink"
+		>
+			<g
+				id="Basic-Elements"
+				stroke="none"
+				strokeWidth="1"
+				fill="none"
+				fillRule="evenodd"
+			>
+				<g
+					id="Rounded-Icons"
+					transform="translate(-2319.000000, -291.000000)"
+					fill={colors[color] ? colors[color].main : colors.dark.main}
+					fillRule="nonzero"
+				>
+					<g
+						id="Icons-with-opacity"
+						transform="translate(1716.000000, 291.000000)"
+					>
+						<g
+							id="box-3d-50"
+							transform="translate(603.000000, 0.000000)"
+						>
+							<path
+								d="M22.7597136,19.3090182 L38.8987031,11.2395234 C39.3926816,10.9925342 39.592906,10.3918611 39.3459167,9.89788265 C39.249157,9.70436312 39.0922432,9.5474453 38.8987261,9.45068056 L20.2741875,0.1378125 L20.2741875,0.1378125 C19.905375,-0.04725 19.469625,-0.04725 19.0995,0.1378125 L3.1011696,8.13815822 C2.60720568,8.38517662 2.40701679,8.98586148 2.6540352,9.4798254 C2.75080129,9.67332903 2.90771305,9.83023153 3.10122239,9.9269862 L21.8652864,19.3090182 C22.1468139,19.4497819 22.4781861,19.4497819 22.7597136,19.3090182 Z"
+								id="Path"
+							/>
+							<path
+								d="M23.625,22.429159 L23.625,39.8805372 C23.625,40.4328219 24.0727153,40.8805372 24.625,40.8805372 C24.7802551,40.8805372 24.9333778,40.8443874 25.0722402,40.7749511 L41.2741875,32.673375 L41.2741875,32.673375 C41.719125,32.4515625 42,31.9974375 42,31.5 L42,14.241659 C42,13.6893742 41.5522847,13.241659 41,13.241659 C40.8447549,13.241659 40.6916418,13.2778041 40.5527864,13.3472318 L24.1777864,21.5347318 C23.8390024,21.7041238 23.625,22.0503869 23.625,22.429159 Z"
+								id="Path"
+								opacity="0.7"
+							/>
+							<path
+								d="M20.4472136,21.5347318 L1.4472136,12.0347318 C0.953235098,11.7877425 0.352562058,11.9879669 0.105572809,12.4819454 C0.0361450918,12.6208008 6.47121774e-16,12.7739139 0,12.929159 L0,30.1875 L0,30.1875 C0,30.6849375 0.280875,31.1390625 0.7258125,31.3621875 L19.5528096,40.7750766 C20.0467945,41.0220531 20.6474623,40.8218132 20.8944388,40.3278283 C20.963859,40.1889789 21,40.0358742 21,39.8806379 L21,22.429159 C21,22.0503869 20.7859976,21.7041238 20.4472136,21.5347318 Z"
+								id="Path"
+								opacity="0.7"
+							/>
+						</g>
+					</g>
+				</g>
+			</g>
+		</svg>
+	);
+}
+
+// Setting default values for the props of Cube
+Cube.defaultProps = {
+	color: "dark",
+	size: "16px",
+};
 const IconFromName = ({ name }) => {
 	switch (name) {
 		case "storage":
@@ -142,6 +324,15 @@ const IconFromName = ({ name }) => {
 			return <MenuIcon />;
 		case "dns":
 			return <DnsIcon />;
+		case "cube":
+			return <Cube />;
+		case "settings":
+			return <Settings />;
+		case "message":
+			return <Message />;
+		case "refresh":
+			return <RefreshIcon />;
+
 		case "keyboardcommandkey":
 			return <KeyboardCommandKeyIcon />;
 		default:
@@ -3454,7 +3645,7 @@ PageLayout.defaultProps = {
 
 export function BasicLayout({ title, description, image, children }) {
 	return (
-		<PageLayout>
+		<PayLayoutBase>
 			{/* <DefaultNavbar
         routes={pageRoutes}
         action={{
@@ -3465,60 +3656,9 @@ export function BasicLayout({ title, description, image, children }) {
         transparent
         light
       /> */}
-			<SuiBox
-				width="calc(100% - 2rem)"
-				minHeight="50vh"
-				borderRadius="lg"
-				mx={2}
-				my={2}
-				pt={6}
-				pb={28}
-				sx={{
-					backgroundImage: ({
-						functions: { linearGradient, rgba },
-						palette: { gradients },
-					}) =>
-						image &&
-						`${linearGradient(
-							rgba(gradients.dark.main, 0.6),
-							rgba(gradients.dark.state, 0.6)
-						)}, url(${image})`,
-					backgroundSize: "cover",
-					backgroundPosition: "center",
-					backgroundRepeat: "no-repeat",
-				}}
-			>
-				<Grid
-					container
-					spacing={3}
-					justifyContent="center"
-					sx={{ textAlign: "center" }}
-				>
-					<Grid item xs={10} lg={4}>
-						<SuiBox mt={6} mb={1}>
-							<SuiTypography
-								variant="h1"
-								color="white"
-								fontWeight="bold"
-							>
-								{title}
-							</SuiTypography>
-						</SuiBox>
-						<SuiBox mb={2}>
-							<SuiTypography
-								variant="body2"
-								color="white"
-								fontWeight="regular"
-							>
-								{description}
-							</SuiTypography>
-						</SuiBox>
-					</Grid>
-				</Grid>
-			</SuiBox>
 
 			<SuiBox
-				mt={{ xs: -26, lg: -24 }}
+				mt={{ xs: 10, lg: 20 }}
 				px={1}
 				width="calc(100% - 2rem)"
 				mx="auto"
@@ -3529,8 +3669,8 @@ export function BasicLayout({ title, description, image, children }) {
 					</Grid>
 				</Grid>
 			</SuiBox>
-			<Footer />
-		</PageLayout>
+			{/* <Footer /> */}
+		</PayLayoutBase>
 	);
 }
 
@@ -4583,7 +4723,7 @@ export function SuiTableNoCard({ headers, rows, title }) {
 		</Fragment>
 	);
 }
-export function SuiTable({ headers, rows, title }) {
+export function SuiTable({ headers, rows, title, icon }) {
 	const PageHeaders = (
 		<Fragment>
 			{headers.map((header, index) => {
@@ -4620,12 +4760,69 @@ export function SuiTable({ headers, rows, title }) {
 						circular
 						iconOnly
 					>
-						<Icon sx={{ fontWeight: "bold" }}>done</Icon>
+						<IconFromName name={icon || ""} />
+						{/* <Icon sx={{ fontWeight: "bold" }}>done</Icon> */}
 					</SuiButton>
 				</Tooltip>
 			</SuiBox>
 			<SuiBox py={1} px={2}>
 				<TableContainer sx={{ boxShadow: "none" }}>
+					<Table>
+						<SuiBox component="thead">
+							<TableRow>{PageHeaders}</TableRow>
+						</SuiBox>
+						<TableBody>{PageRows}</TableBody>
+					</Table>
+				</TableContainer>
+			</SuiBox>
+		</Card>
+	);
+}
+export function SuiTableClick({ headers, rows, title, icon, iconClick }) {
+	const PageHeaders = (
+		<Fragment>
+			{headers.map((header, index) => {
+				return <PagesHeaderCell key={index}>{header}</PagesHeaderCell>;
+			})}
+		</Fragment>
+	);
+
+	const PageRows = (
+		<Fragment>
+			{rows.map((row, index) => {
+				return <PagesBodyCell key={index} rows={row} />;
+			})}
+		</Fragment>
+	);
+	return (
+		<Card>
+			<SuiBox
+				display="flex"
+				justifyContent="space-between"
+				alignItems="center"
+				pt={2}
+				px={2}
+			>
+				<SuiTypography variant="h6">{title}</SuiTypography>
+				<Tooltip
+					title="Data is based from sessions and is 100% accurate"
+					placement="left"
+				>
+					<SuiButton
+						variant="outlined"
+						color="black"
+						size="small"
+						circular
+						iconOnly
+						onClick={iconClick}
+					>
+						<IconFromName name={icon || ""} />
+						{/* <Icon sx={{ fontWeight: "bold" }}>done</Icon> */}
+					</SuiButton>
+				</Tooltip>
+			</SuiBox>
+			<SuiBox py={1} px={2}>
+				<TableContainer sx={{ boxShadow: "none", maxHeight: 300 }}>
 					<Table>
 						<SuiBox component="thead">
 							<TableRow>{PageHeaders}</TableRow>
@@ -5640,7 +5837,7 @@ export function Configurator({ controller, setController, children }) {
 	);
 }
 
-export const ConfigurationButton = ({ onClick }) => {
+export const ConfigurationButton = ({ onClick, icon }) => {
 	const configsButton = (
 		<SuiBox
 			display="flex"
@@ -5659,7 +5856,7 @@ export const ConfigurationButton = ({ onClick }) => {
 			sx={{ cursor: "pointer" }}
 			onClick={onClick}
 		>
-			<SettingsIcon />
+			<IconFromName name={icon || "settings"} />
 			{/* <Icon fontSize="default" color="inherit">
 				settings
 			</Icon> */}
@@ -11275,41 +11472,101 @@ export const AirTablePageBasic = ({
 	);
 };
 
-export const BnbDashboardPage = ({ title, subTitle }) => {
+const HeaderTabs = ({ title, subTitle, imageSrc, tabsArray }) => {
+	// const [tabsOrientation, setTabsOrientation] = useState("horizontal");
+	// const [tabValue, setTabValue] = useState(0);
+	// const handleSetTabValue = (event, newValue) => setTabValue(newValue);
+
+	const [tab, setTab] = useState(0);
+	const setTabClick = (event, newTab) => {
+		setTab(newTab);
+		const tabDict = tabsArray[newTab];
+
+		console.log({ newTab, tabDict });
+		tabDict["func"]();
+	};
+	const renderTabs = () => (
+		<Tabs
+			orientation={"horizontal"}
+			value={tab}
+			onChange={setTabClick}
+			sx={{ background: "transparent" }}
+		>
+			{tabsArray.map((D, key) => (
+				<Tab
+					key={key}
+					label={D.title}
+					icon={<IconFromName name={D.icon} />}
+				/>
+			))}
+		</Tabs>
+	);
+
 	return (
-		<PayLayoutBase>
-			<SuiBox py={3}>
-				<SuiBox marginBottom={3}>
-					<Grid container>
-						<Grid item xs={12} lg={12}>
-							<SuiBox mb={3} p={1}>
-								<SuiTypography
-									variant={"h1"}
-									textTransform="capitalize"
-									fontWeight="bold"
-								>
-									<div
-										dangerouslySetInnerHTML={{
-											__html: title || "",
-										}}
-									></div>
-								</SuiTypography>
-								<SuiTypography variant={"h4"}>
-									<div
-										dangerouslySetInnerHTML={{
-											__html: subTitle || "",
-										}}
-									></div>
-								</SuiTypography>
-							</SuiBox>
-						</Grid>
-					</Grid>
-				</SuiBox>
-			</SuiBox>
-		</PayLayoutBase>
+		<Card
+			sx={{
+				backdropFilter: `saturate(200%) blur(30px)`,
+				backgroundColor: ({
+					functions: { rgba },
+					palette: { white },
+				}) => rgba(white.main, 0.8),
+				boxShadow: ({ boxShadows: { navbarBoxShadow } }) =>
+					navbarBoxShadow,
+				position: "relative",
+				// mt: -8,
+				mx: 3,
+				py: 2,
+				px: 2,
+			}}
+		>
+			<Grid container spacing={3} alignItems="center">
+				<Grid item>
+					<SuiAvatar
+						src={
+							imageSrc ||
+							sharepointURLDirectoryDefine() +
+								"dependencies/code/png/mtd_icon.png"
+						}
+						alt="profile-image"
+						variant="rounded"
+						size="xl"
+						shadow="sm"
+					/>
+				</Grid>
+				<Grid item>
+					<SuiBox height="100%" mt={0.5} lineHeight={1}>
+						<SuiTypography variant="h5" fontWeight="medium">
+							{title || ""}
+						</SuiTypography>
+						<SuiTypography
+							variant="button"
+							color="text"
+							fontWeight="medium"
+						>
+							{subTitle || ""}
+						</SuiTypography>
+					</SuiBox>
+				</Grid>
+				<Grid item xs={12} md={6} lg={4} sx={{ ml: "auto" }}>
+					<AppBar position="static">
+						{renderTabs()}
+
+						{/* <Tabs
+              orientation={tabsOrientation}
+              value={tabValue}
+              onChange={handleSetTabValue}
+              sx={{ background: "transparent" }}
+            >
+              <Tab label="App" icon={<Cube />} />
+              <Tab label="Message" icon={<Document />} />
+              <Tab label="Settings" icon={<Settings />} />
+            </Tabs> */}
+					</AppBar>
+				</Grid>
+			</Grid>
+		</Card>
 	);
 };
-
 export const MTDDashboardPage = ({
 	title,
 	subTitle,
@@ -11321,6 +11578,9 @@ export const MTDDashboardPage = ({
 	dataTable,
 	status,
 	people,
+	jiraDataTables,
+	headerTabsConfig,
+	configurationDict,
 }) => {
 	const renderMetrics = () => (
 		<Grid container spacing={3}>
@@ -11352,68 +11612,150 @@ export const MTDDashboardPage = ({
 		<Grid container spacing={3}>
 			{tables.map((tableDict, key) => (
 				<Grid key={key} item xs={12} lg={4}>
-					<SuiTable
+					<SuiTableClick
 						rows={tableDict.rows || []}
 						headers={tableDict.headers || []}
 						title={tableDict.title || ""}
+						{...tableDict}
 					/>
 				</Grid>
 			))}
 		</Grid>
 	);
-
+	console.log(jiraDataTables);
 	return (
 		<PayLayoutBase brand={brand} brandName={brandName} routes={routes}>
 			<SuiBox py={3}>
 				<SuiBox marginBottom={3}>
-					<Grid container>
-						<Grid item xs={12} lg={12}>
-							<SuiBox mb={3} p={1}>
-								<SuiTypography
-									variant={"h1"}
-									textTransform="capitalize"
-									fontWeight="bold"
-								>
-									<div
-										dangerouslySetInnerHTML={{
-											__html: title || "",
-										}}
-									></div>
-								</SuiTypography>
-								<SuiTypography variant={"h4"}>
-									<div
-										dangerouslySetInnerHTML={{
-											__html: subTitle || "",
-										}}
-									></div>
-								</SuiTypography>
-							</SuiBox>
-						</Grid>
-					</Grid>
+					<HeaderTabs {...headerTabsConfig} />
 				</SuiBox>
+				{/* <SuiBox marginBottom={3}>
+          <Grid container>
+            <Grid item xs={12} lg={12}>
+              <SuiBox mb={3} p={1}>
+                <SuiTypography
+                  variant={"h1"}
+                  textTransform="capitalize"
+                  fontWeight="bold"
+                >
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: title || "",
+                    }}
+                  ></div>
+                </SuiTypography>
+                <SuiTypography variant={"h4"}>
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: subTitle || "",
+                    }}
+                  ></div>
+                </SuiTypography>
+              </SuiBox>
+            </Grid>
+          </Grid>
+        </SuiBox> */}
 				<SuiBox marginBottom={3}>{renderMetrics()}</SuiBox>
 				<SuiBox marginBottom={3}>
 					<Stories storiesData={people} />
 				</SuiBox>
 
 				<SuiBox marginBottom={3}>{renderTables()}</SuiBox>
+
 				<SuiBox marginBottom={3}>
-					<AirTablePageBase
-						title={dataTable.title || ""}
-						dataTables={dataTable.dataTables || []}
+					<AirTablePageBaseRead
+						title={jiraDataTables.title || ""}
+						dataTables={jiraDataTables.dataTables || []}
 					/>
 				</SuiBox>
-
+				{/* <SuiBox marginBottom={3}>
+          <AirTablePageBase
+            title={dataTable.title || ""}
+            dataTables={dataTable.dataTables || []}
+          />
+        </SuiBox> */}
 				<SuiBox marginBottom={3}>
 					<Grid container spacing={3}>
 						<Grid item xs={12} lg={6}></Grid>
 					</Grid>
 				</SuiBox>
 			</SuiBox>
+			<ConfigurationButton
+				onClick={configurationDict.onClick}
+				icon={configurationDict.icon}
+			/>
 		</PayLayoutBase>
 	);
 };
+export const AirTablePageBaseRead = ({ title, dataTables }) => {
+	const [tab, setTab] = useState(0);
+	const setTabClick = (event, newTab) => setTab(newTab);
+	const renderTabs = () => (
+		<Tabs orientation={"horizontal"} value={tab} onChange={setTabClick}>
+			{dataTables.map((dataTableDict, key) => (
+				<Tab key={key} label={dataTableDict.title} />
+			))}
+		</Tabs>
+	);
 
+	const renderTables = () => (
+		<Fragment>
+			{dataTables.map((dataTableDict, key) => (
+				<span key={key} style={{ display: key == tab ? "" : "none" }}>
+					<table
+						// className="table-react"
+						className="table-react table table-striped table-bordered table-hover"
+						style={{ width: "100%" }}
+						id={dataTableDict.id}
+					></table>
+				</span>
+			))}
+		</Fragment>
+	);
+	dataTables.forEach(function (dataTableDict) {
+		datatables_determine_create_update(
+			"#" + dataTableDict.id,
+			dataTableDict.table_dict,
+			dataTableDict.table_dict.data
+		);
+
+		// loadDataTableSharePoint({ ...dataTableDict.table_dict });
+	});
+	return (
+		<Grid container spacing={3}>
+			<Grid item xs={12} xl={12}>
+				<Card>
+					<SuiBox
+						display="flex"
+						justifyContent="space-between"
+						alignItems="center"
+						pt={2}
+						px={2}
+					>
+						<SuiTypography variant="h6">
+							{title || ""}
+						</SuiTypography>
+						<SuiBox
+							display="flex"
+							justifyContent="space-between"
+							alignItems="center"
+							width="60%"
+						>
+							<SuiBox width="90%">
+								<AppBar position="static">
+									{renderTabs()}
+								</AppBar>
+							</SuiBox>
+						</SuiBox>
+					</SuiBox>
+					<SuiBox p={2} mt={1}>
+						{renderTables()}
+					</SuiBox>
+				</Card>
+			</Grid>
+		</Grid>
+	);
+};
 export const AirTablePageBase = ({ title, dataTables }) => {
 	const [tab, setTab] = useState(0);
 	const setTabClick = (event, newTab) => setTab(newTab);
@@ -11776,31 +12118,1589 @@ export const ThankYouPage = ({ titlex, descriptionx }) => {
 		</PageLayout>
 	);
 };
-export const Sandbox = () => {
-	const controller = {
-		miniSidenav: false,
-		transparentSidenav: true,
-		sidenavColor: "info",
-		transparentNavbar: true,
-		fixedNavbar: true,
-		openConfigurator: false,
-		direction: "ltr",
-		layout: "dashboard",
+
+function verticalBarChartConfigs(labels, datasets) {
+	return {
+		data: {
+			labels,
+			datasets: [...datasets],
+		},
+		options: {
+			responsive: true,
+			maintainAspectRatio: false,
+			plugins: {
+				legend: {
+					display: false,
+				},
+			},
+			scales: {
+				y: {
+					grid: {
+						drawBorder: false,
+						display: true,
+						drawOnChartArea: true,
+						drawTicks: false,
+						borderDash: [5, 5],
+					},
+					ticks: {
+						display: true,
+						padding: 10,
+						color: "#9ca2b7",
+						font: {
+							size: 11,
+							family: typography.fontFamily,
+							style: "normal",
+							lineHeight: 2,
+						},
+					},
+				},
+				x: {
+					grid: {
+						drawBorder: false,
+						display: false,
+						drawOnChartArea: true,
+						drawTicks: true,
+					},
+					ticks: {
+						display: true,
+						color: "#9ca2b7",
+						padding: 10,
+						font: {
+							size: 11,
+							family: typography.fontFamily,
+							style: "normal",
+							lineHeight: 2,
+						},
+					},
+				},
+			},
+		},
+	};
+}
+
+function VerticalBarChart({ title, description, height, chart }) {
+	const chartDatasets = chart.datasets
+		? chart.datasets.map((dataset) => ({
+				...dataset,
+				weight: 5,
+				borderWidth: 0,
+				borderRadius: 4,
+				backgroundColor: colors[dataset.color]
+					? colors[dataset.color || "dark"].main
+					: colors.dark.main,
+				fill: false,
+				maxBarThickness: 35,
+		  }))
+		: [];
+
+	const { data, options } = verticalBarChartConfigs(
+		chart.labels || [],
+		chartDatasets
+	);
+
+	const renderChart = (
+		<SuiBox p={2}>
+			{title || description ? (
+				<SuiBox px={description ? 1 : 0} pt={description ? 1 : 0}>
+					{title && (
+						<SuiBox mb={1}>
+							<SuiTypography variant="h6">{title}</SuiTypography>
+						</SuiBox>
+					)}
+					<SuiBox mb={2}>
+						<SuiTypography
+							component="div"
+							variant="button"
+							fontWeight="regular"
+							color="text"
+						>
+							{description}
+						</SuiTypography>
+					</SuiBox>
+				</SuiBox>
+			) : null}
+			{useMemo(
+				() => (
+					<SuiBox height={height}>
+						<Bar data={data} options={options} />
+					</SuiBox>
+				),
+				[chart, height]
+			)}
+		</SuiBox>
+	);
+
+	return title || description ? <Card>{renderChart}</Card> : renderChart;
+}
+
+// Setting default values for the props of VerticalBarChart
+VerticalBarChart.defaultProps = {
+	title: "",
+	description: "",
+	height: "19.125rem",
+};
+
+function horizontalBarConfigs(labels, datasets) {
+	return {
+		data: {
+			labels,
+			datasets: [...datasets],
+		},
+		options: {
+			indexAxis: "y",
+			responsive: true,
+			maintainAspectRatio: false,
+			plugins: {
+				legend: {
+					display: false,
+				},
+			},
+			scales: {
+				y: {
+					grid: {
+						drawBorder: false,
+						display: true,
+						drawOnChartArea: true,
+						drawTicks: false,
+						borderDash: [5, 5],
+					},
+					ticks: {
+						display: true,
+						padding: 10,
+						color: "#9ca2b7",
+						font: {
+							size: 11,
+							family: typography.fontFamily,
+							style: "normal",
+							lineHeight: 2,
+						},
+					},
+				},
+				x: {
+					grid: {
+						drawBorder: false,
+						display: false,
+						drawOnChartArea: true,
+						drawTicks: true,
+					},
+					ticks: {
+						display: true,
+						color: "#9ca2b7",
+						padding: 10,
+						font: {
+							size: 11,
+							family: typography.fontFamily,
+							style: "normal",
+							lineHeight: 2,
+						},
+					},
+				},
+			},
+		},
+	};
+}
+
+function HorizontalBarChart({ title, description, height, chart }) {
+	const chartDatasets = chart.datasets
+		? chart.datasets.map((dataset) => ({
+				...dataset,
+				weight: 5,
+				borderWidth: 0,
+				borderRadius: 4,
+				backgroundColor: colors[dataset.color]
+					? colors[dataset.color || "dark"].main
+					: colors.dark.main,
+				fill: true,
+				maxBarThickness: 35,
+		  }))
+		: [];
+
+	const { data, options } = horizontalBarConfigs(
+		chart.labels || [],
+		chartDatasets
+	);
+	const renderChart = (
+		<SuiBox p={2}>
+			{title || description ? (
+				<SuiBox px={description ? 1 : 0} pt={description ? 1 : 0}>
+					{title && (
+						<SuiBox mb={1}>
+							<SuiTypography variant="h6">{title}</SuiTypography>
+						</SuiBox>
+					)}
+					<SuiBox mb={2}>
+						<SuiTypography
+							component="div"
+							variant="button"
+							fontWeight="regular"
+							color="text"
+						>
+							{description}
+						</SuiTypography>
+					</SuiBox>
+				</SuiBox>
+			) : null}
+			{useMemo(
+				() => (
+					<SuiBox height={height}>
+						<Bar data={data} options={options} />
+					</SuiBox>
+				),
+				[chart, height]
+			)}
+		</SuiBox>
+	);
+
+	return title || description ? <Card>{renderChart}</Card> : renderChart;
+}
+
+// Setting default values for the props of HorizontalBarChart
+HorizontalBarChart.defaultProps = {
+	title: "",
+	description: "",
+	height: "19.125rem",
+};
+
+export const HorizontalBarChartExample = ({ title, subTitle }) => {
+	const chart = {
+		labels: ["16-20", "21-25", "26-30", "31-36", "36-42", "42+"],
+		datasets: [
+			{
+				label: "Sales by age",
+				color: "dark",
+				data: [15, 20, 12, 60, 20, 15],
+			},
+		],
+	};
+
+	const verticalChartData = {
+		labels: ["16-20", "21-25", "26-30", "31-36", "36-42", "42+"],
+		datasets: [
+			{
+				label: "Sales by age",
+				color: "dark",
+				data: [15, 20, 12, 60, 20, 15],
+			},
+		],
+	};
+
+	return (
+		<PayLayoutBase>
+			<SuiBox marginBottom={3}>
+				<HorizontalBarChart title={"example2"} chart={chart} />
+			</SuiBox>
+			<SuiBox marginBottom={3}>
+				<VerticalBarChart title={"example"} chart={verticalChartData} />
+			</SuiBox>
+		</PayLayoutBase>
+	);
+};
+
+function RankingListOriginal({ title, date, rankings }) {
+	const renderRankings = rankings.map(
+		({ color, icon, name, description, value }, key) => (
+			<SuiBox key={name} component="li" pt={1} pr={2}>
+				<SuiBox
+					display="flex"
+					justifyContent="space-between"
+					alignItems="center"
+				>
+					<SuiBox display="flex" alignItems="center">
+						<SuiBox mr={2}>
+							<SuiButton
+								variant="outlined"
+								color={color}
+								size="small"
+								iconOnly
+								circular
+								sx={({ functions: { pxToRem } }) => ({
+									width: pxToRem(34),
+									minWidth: pxToRem(34),
+									height: pxToRem(34),
+									minHeight: pxToRem(34),
+								})}
+							>
+								<IconFromName name={icon}></IconFromName>
+								{/* <Icon>{icon}</Icon> */}
+							</SuiButton>
+						</SuiBox>
+						<SuiBox display="flex" flexDirection="column">
+							<SuiTypography
+								variant="button"
+								fontWeight="medium"
+								gutterBottom
+							>
+								{name}
+							</SuiTypography>
+							<SuiTypography variant="caption" color="text">
+								{description}
+							</SuiTypography>
+						</SuiBox>
+					</SuiBox>
+					<SuiTypography
+						variant="button"
+						color={color}
+						fontWeight="medium"
+						textGradient
+					>
+						{value}
+					</SuiTypography>
+				</SuiBox>
+				{key === rankings.length - 1 ? null : (
+					<Divider
+						sx={{
+							mt: 2,
+							mb: 1,
+						}}
+					/>
+				)}
+			</SuiBox>
+		)
+	);
+
+	return (
+		<Card sx={{ height: "100%" }}>
+			<SuiBox
+				display="flex"
+				justifyContent="space-between"
+				alignItems="center"
+				pt={2}
+				px={2}
+			>
+				<SuiTypography
+					variant="h6"
+					fontWeight="medium"
+					textTransform="capitalize"
+				>
+					{title}
+				</SuiTypography>
+				<SuiTypography
+					variant="button"
+					color="text"
+					fontWeight="regular"
+					sx={{ display: "flex" }}
+				>
+					{/* <Icon
+						color="inherit"
+						fontSize="small"
+						sx={{
+							mr: 0.75,
+							mt: -0.125,
+						}}
+					>
+						date_range
+					</Icon> */}
+					{/* <IconFromName name={"date_range"}></IconFromName> */}
+					{date}
+				</SuiTypography>
+			</SuiBox>
+			<SuiBox p={2}>
+				<SuiBox
+					component="ul"
+					display="flex"
+					flexDirection="column"
+					p={0}
+					m={0}
+					sx={{ listStyle: "none" }}
+				>
+					{renderRankings}
+				</SuiBox>
+			</SuiBox>
+		</Card>
+	);
+}
+function RankingListWithIcon({ title, rightTitle, array }) {
+	const renderRankings = array.map(
+		({ color, icon, name, description, value }, key) => (
+			<SuiBox key={name} component="li" pt={1} pr={2}>
+				<SuiBox
+					display="flex"
+					justifyContent="space-between"
+					alignItems="center"
+				>
+					<SuiBox display="flex" alignItems="center">
+						<SuiBox mr={2}>
+							<SuiButton
+								variant="outlined"
+								color={color}
+								size="small"
+								iconOnly
+								circular
+								sx={({ functions: { pxToRem } }) => ({
+									width: pxToRem(34),
+									minWidth: pxToRem(34),
+									height: pxToRem(34),
+									minHeight: pxToRem(34),
+								})}
+							>
+								<IconFromName name={icon}></IconFromName>
+								{/* <Icon>{icon}</Icon> */}
+							</SuiButton>
+						</SuiBox>
+						<SuiBox display="flex" flexDirection="column">
+							<SuiTypography
+								variant="button"
+								fontWeight="medium"
+								gutterBottom
+							>
+								{name}
+							</SuiTypography>
+							<SuiTypography variant="caption" color="text">
+								{description}
+							</SuiTypography>
+						</SuiBox>
+					</SuiBox>
+					<SuiTypography
+						variant="button"
+						color={color}
+						fontWeight="medium"
+						textGradient
+					>
+						{value}
+					</SuiTypography>
+				</SuiBox>
+				{key === array.length - 1 ? null : (
+					<Divider
+						sx={{
+							mt: 2,
+							mb: 1,
+						}}
+					/>
+				)}
+			</SuiBox>
+		)
+	);
+
+	return (
+		<Card sx={{ height: "100%" }}>
+			<SuiBox
+				display="flex"
+				justifyContent="space-between"
+				alignItems="center"
+				pt={2}
+				px={2}
+			>
+				<SuiTypography
+					variant="h6"
+					fontWeight="medium"
+					textTransform="capitalize"
+				>
+					{title}
+				</SuiTypography>
+				<SuiTypography
+					variant="button"
+					color="text"
+					fontWeight="regular"
+					sx={{ display: "flex" }}
+				>
+					{/* <Icon
+						color="inherit"
+						fontSize="small"
+						sx={{
+							mr: 0.75,
+							mt: -0.125,
+						}}
+					>
+						date_range
+					</Icon> */}
+					{/* <IconFromName name={"date_range"}></IconFromName> */}
+					{rightTitle}
+				</SuiTypography>
+			</SuiBox>
+			<SuiBox p={2}>
+				<SuiBox
+					component="ul"
+					display="flex"
+					flexDirection="column"
+					p={0}
+					m={0}
+					sx={{ listStyle: "none" }}
+				>
+					{renderRankings}
+				</SuiBox>
+			</SuiBox>
+		</Card>
+	);
+}
+
+function RankingList({ title, rightTitle, array }) {
+	const renderRankings = array.map(
+		({ color, icon, name, description, value }, key) => (
+			<SuiBox key={name} component="li" pt={1} pr={2}>
+				<SuiBox
+					display="flex"
+					justifyContent="space-between"
+					alignItems="center"
+				>
+					<SuiBox display="flex" alignItems="center">
+						<SuiBox display="flex" flexDirection="column">
+							<SuiTypography
+								variant="button"
+								fontWeight="medium"
+								gutterBottom
+							>
+								{name}
+							</SuiTypography>
+							<SuiTypography variant="caption" color="text">
+								{description}
+							</SuiTypography>
+						</SuiBox>
+					</SuiBox>
+					<SuiTypography
+						variant="button"
+						color={color}
+						fontWeight="medium"
+						textGradient
+					>
+						{value}
+					</SuiTypography>
+				</SuiBox>
+				{key === array.length - 1 ? null : (
+					<Divider
+						sx={{
+							mt: 2,
+							mb: 1,
+						}}
+					/>
+				)}
+			</SuiBox>
+		)
+	);
+
+	return (
+		<Card sx={{ height: "100%" }}>
+			<SuiBox
+				display="flex"
+				justifyContent="space-between"
+				alignItems="center"
+				pt={2}
+				px={2}
+			>
+				<SuiTypography
+					variant="h6"
+					fontWeight="medium"
+					textTransform="capitalize"
+				>
+					{title}
+				</SuiTypography>
+				<SuiTypography
+					variant="button"
+					color="text"
+					fontWeight="regular"
+					sx={{ display: "flex" }}
+				>
+					{/* <Icon
+						color="inherit"
+						fontSize="small"
+						sx={{
+							mr: 0.75,
+							mt: -0.125,
+						}}
+					>
+						date_range
+					</Icon> */}
+					{/* <IconFromName name={"date_range"}></IconFromName> */}
+					{rightTitle}
+				</SuiTypography>
+			</SuiBox>
+			<SuiBox p={2}>
+				<SuiBox
+					component="ul"
+					display="flex"
+					flexDirection="column"
+					p={0}
+					m={0}
+					sx={{ listStyle: "none" }}
+				>
+					{renderRankings}
+				</SuiBox>
+			</SuiBox>
+		</Card>
+	);
+}
+
+export const RankingListExample = () => {
+	const transactionsData = [
+		{
+			color: "error",
+			icon: "arrow_downward",
+			name: "Netflix",
+			description: "27 March 2020, at 12:30 PM",
+			value: "- $ 2,500",
+		},
+		{
+			color: "success",
+			icon: "arrow_upward",
+			name: "Apple",
+			description: "23 March 2020, at 04:30 AM",
+			value: "+ $ 2,000",
+		},
+		{
+			color: "success",
+			icon: "arrow_upward",
+			name: "Partner #22213",
+			description: "19 March 2020, at 02:50 AM",
+			value: "- $ 1,400",
+		},
+	];
+
+	const revenueData = [
+		{
+			color: "success",
+			icon: "arrow_upward",
+			name: "via PayPal",
+			description: "07 June 2021, at 09:00 AM",
+			value: "+ $ 4,999",
+		},
+		{
+			color: "success",
+			icon: "arrow_upward",
+			name: "Partner #90211",
+			description: "07 June 2021, at 05:50 AM",
+			value: "+ $ 700",
+		},
+		{
+			color: "error",
+			icon: "arrow_downward",
+			name: "Services",
+			description: "07 June 2021, at 07:10 PM",
+			value: "- $ 1,800",
+		},
+	];
+	return (
+		<PayLayoutBase>
+			<Grid container spacing={3}>
+				<Grid item xs={12} md={6}>
+					<RankingList
+						title="transactions"
+						rightTitle="23 - 30 March 2021"
+						array={transactionsData}
+					/>
+				</Grid>
+				<Grid item xs={12} md={6}>
+					<RankingList
+						title="revenue"
+						rightTitle="01 - 07 June 2021"
+						array={revenueData}
+					/>
+				</Grid>
+			</Grid>
+		</PayLayoutBase>
+	);
+};
+
+export const BnbDashboardPage = ({ title, subTitle }) => {
+	return (
+		<PayLayoutBase>
+			<SuiBox py={3}>
+				<SuiBox marginBottom={3}>
+					<Grid container>
+						<Grid item xs={12} lg={12}>
+							<SuiBox mb={3} p={1}>
+								<SuiTypography
+									variant={"h1"}
+									textTransform="capitalize"
+									fontWeight="bold"
+								>
+									<div
+										dangerouslySetInnerHTML={{
+											__html: title || "",
+										}}
+									></div>
+								</SuiTypography>
+								<SuiTypography variant={"h4"}>
+									<div
+										dangerouslySetInnerHTML={{
+											__html: subTitle || "",
+										}}
+									></div>
+								</SuiTypography>
+							</SuiBox>
+						</Grid>
+					</Grid>
+				</SuiBox>
+			</SuiBox>
+		</PayLayoutBase>
+	);
+};
+export const LoginPage = ({ title, subTitle }) => {
+	return (
+		<PayLayoutBase>
+			<SuiBox py={3}>
+				<SuiBox marginBottom={3}>
+					<Grid container>
+						<Grid item xs={12} lg={12}>
+							<SuiBox mb={3} p={1}>
+								<SuiTypography
+									variant={"h1"}
+									textTransform="capitalize"
+									fontWeight="bold"
+								>
+									<div
+										dangerouslySetInnerHTML={{
+											__html: title || "",
+										}}
+									></div>
+								</SuiTypography>
+								<SuiTypography variant={"h4"}>
+									<div
+										dangerouslySetInnerHTML={{
+											__html: subTitle || "",
+										}}
+									></div>
+								</SuiTypography>
+							</SuiBox>
+						</Grid>
+					</Grid>
+				</SuiBox>
+			</SuiBox>
+		</PayLayoutBase>
+	);
+};
+
+function circularSlider(theme, { color }) {
+	const { palette, transitions } = theme;
+
+	const { circleSliderColors, transparent } = palette;
+
+	return {
+		"& svg": {
+			position: "absolute",
+			top: "50%",
+			left: "50%",
+			transform: `translate(-50%, -40%)`,
+		},
+
+		"& path:first-of-type": {
+			stroke: circleSliderColors.background,
+			strokeWidth: 1,
+		},
+
+		"& path": {
+			stroke: palette[color].main,
+			strokeWidth: 1,
+		},
+
+		"& circle": {
+			stroke: transparent.main,
+			strokeWidth: 0,
+			filter: "none",
+			fill: palette[color].main,
+			cursor: "pointer",
+			transition: transitions.create(["stroke", "stroke-width"], {
+				easing: transitions.easing.easeInOut,
+				duration: transitions.duration.complex,
+			}),
+
+			"&:active": {
+				stroke: palette[color].main,
+				strokeWidth: 5,
+			},
+		},
+	};
+}
+
+function TemperatureSlider({
+	title,
+	color,
+	current,
+	label,
+	start,
+	end,
+	...sliderProps
+}) {
+	const { circleSliderColors } = colors;
+
+	return (
+		<Card sx={{ height: "99.5%" }}>
+			<SuiBox p={2} position="relative" height="100%">
+				<SuiBox mb={1}>
+					<SuiTypography variant="h6" fontWeight="medium">
+						{title}
+					</SuiTypography>
+				</SuiBox>
+				<SuiBox
+					height="100%"
+					textAlign="center"
+					sx={(theme) => circularSlider(theme, { color })}
+				>
+					<CircularSlider
+						{...sliderProps}
+						arcBackgroundColor={circleSliderColors.background}
+						arcColor={colors[color].main}
+						startAngle={45}
+						endAngle={315}
+						handleSize={6}
+						size={220}
+					/>
+					<SuiBox mt={12}>
+						<SuiTypography variant="h4" fontWeight="medium">
+							{current}
+						</SuiTypography>
+					</SuiBox>
+					<SuiBox
+						display="flex"
+						justifyContent="space-around"
+						alignItems="baseline"
+						width="12.5rem"
+						mx="auto"
+						mt={6}
+					>
+						<SuiTypography variant="caption" color="text">
+							{start}
+						</SuiTypography>
+						<SuiTypography
+							variant="body2"
+							color="text"
+							textTransform="capitalize"
+						>
+							{label}
+						</SuiTypography>
+						<SuiTypography variant="caption" color="text">
+							{end}
+						</SuiTypography>
+					</SuiBox>
+				</SuiBox>
+			</SuiBox>
+		</Card>
+	);
+}
+
+// Setting default values for the props of TemperatureSlider
+TemperatureSlider.defaultProps = {
+	color: "info",
+};
+
+export const TemperatureSliderExample = () => {
+	const [temperature, setTemperature] = useState(21);
+
+	return (
+		<TemperatureSlider
+			handle1={{
+				value: temperature,
+				onChange: (v) => setTemperature(Math.round(v)),
+			}}
+			title="Device limit"
+			current={
+				<>
+					{temperature}
+					<SuiTypography component="span" variant="h4" color="text">
+						&deg;C
+					</SuiTypography>
+				</>
+			}
+			label="temperature"
+			start={<>16&deg;C</>}
+			end={<>38&deg;C</>}
+			minValue={16}
+			maxValue={38}
+		/>
+	);
+};
+
+function ThinBarChart({ color, title, height, chart }) {
+	function configs(color, labels, datasets) {
+		return {
+			data: {
+				labels,
+				datasets: [
+					{
+						label: datasets.label,
+						tension: 0.4,
+						borderWidth: 0,
+						borderRadius: 4,
+						borderSkipped: false,
+						backgroundColor: colors[color]
+							? colors[color].main
+							: colors.dark.main,
+						data: datasets.data,
+						maxBarThickness: 6,
+					},
+				],
+			},
+
+			options: {
+				responsive: true,
+				maintainAspectRatio: false,
+				plugins: {
+					legend: {
+						display: false,
+					},
+				},
+				interaction: {
+					intersect: false,
+					mode: "index",
+				},
+				scales: {
+					y: {
+						grid: {
+							drawBorder: false,
+							display: false,
+							drawOnChartArea: false,
+							drawTicks: false,
+						},
+						ticks: {
+							display: false,
+						},
+					},
+					x: {
+						grid: {
+							drawBorder: false,
+							display: false,
+							drawOnChartArea: false,
+							drawTicks: false,
+						},
+						ticks: {
+							beginAtZero: true,
+							font: {
+								size: 12,
+								family: "Open Sans",
+								style: "normal",
+							},
+							color: "#9ca2b7",
+						},
+					},
+					y: {
+						grid: {
+							drawBorder: false,
+							display: false,
+							drawOnChartArea: true,
+							drawTicks: false,
+							borderDash: [5, 5],
+						},
+						ticks: {
+							display: true,
+							padding: 10,
+							color: "#9ca2b7",
+						},
+					},
+					x: {
+						grid: {
+							drawBorder: false,
+							display: true,
+							drawOnChartArea: true,
+							drawTicks: false,
+							borderDash: [5, 5],
+						},
+						ticks: {
+							display: true,
+							padding: 10,
+							color: "#9ca2b7",
+						},
+					},
+				},
+			},
+		};
+	}
+	const { data, options } = configs(
+		color,
+		chart.labels || [],
+		chart.datasets || {}
+	);
+
+	const renderChart = (
+		<SuiBox p={2}>
+			{title && (
+				<SuiBox mb={1}>
+					<SuiTypography variant="h6" color={color}>
+						{title}
+					</SuiTypography>
+				</SuiBox>
+			)}
+			{useMemo(
+				() => (
+					<SuiBox height={height} pt={2}>
+						<Bar data={data} options={options} />
+					</SuiBox>
+				),
+				[chart, height]
+			)}
+		</SuiBox>
+	);
+
+	return title ? <Card>{renderChart}</Card> : renderChart;
+}
+
+// Setting default values for the props of ThinBarChart
+ThinBarChart.defaultProps = {
+	color: "dark",
+	title: "",
+	height: "12.5rem",
+};
+
+function ReportsDoughnutChartItem({ color, title, percentage, hasBorder }) {
+	const { borderWidth } = borders;
+	const { light } = colors;
+
+	return (
+		<Grid
+			container
+			justifyContent="space-between"
+			alignItems="center"
+			sx={{
+				borderBottom: hasBorder
+					? `${borderWidth[1]} solid ${light.main}`
+					: "none",
+				lineHeight: 1.25,
+			}}
+		>
+			<Grid item xs={10}>
+				<SuiBox display="flex" py={0.8} px={2}>
+					<SuiBox
+						bgColor={color}
+						width="1.35rem"
+						height="1.35rem"
+						borderRadius="md"
+						mr={2}
+						lineHeight={0}
+						variant="gradient"
+					/>
+					<SuiBox
+						display="flex"
+						flexDirection="column"
+						justifyContent="center"
+					>
+						<SuiTypography
+							component="div"
+							variant="button"
+							textTransform="capitalize"
+							fontWeight="medium"
+						>
+							{title}
+						</SuiTypography>
+					</SuiBox>
+				</SuiBox>
+			</Grid>
+			<Grid item xs={2}>
+				<SuiBox py={0.8} px={1} textAlign="center" width="100%">
+					<SuiTypography
+						variant="caption"
+						color="text"
+						fontWeight="medium"
+						sx={{ display: "inline-block", width: "max-content" }}
+					>
+						{percentage}
+					</SuiTypography>
+				</SuiBox>
+			</Grid>
+		</Grid>
+	);
+}
+
+// Setting default values for the props of ReportsDoughnutChartItem
+ReportsDoughnutChartItem.defaultProps = {
+	color: "info",
+	hasBorder: false,
+};
+
+function ReportsDoughnutChart({ title, count, chart, tooltip }) {
+	function configs(labels, datasets) {
+		const backgroundColors = [];
+
+		if (datasets.backgroundColors) {
+			datasets.backgroundColors.forEach((color) =>
+				gradients[color]
+					? backgroundColors.push(gradients[color].state)
+					: backgroundColors.push(dark.main)
+			);
+		} else {
+			backgroundColors.push(dark.main);
+		}
+
+		return {
+			data: {
+				labels,
+				datasets: [
+					{
+						label: datasets.label,
+						weight: 9,
+						cutout: 86,
+						tension: 1,
+						pointRadius: 2,
+						borderWidth: 2,
+						backgroundColor: backgroundColors,
+						data: datasets.data,
+						fill: false,
+					},
+				],
+			},
+
+			options: {
+				responsive: true,
+				maintainAspectRatio: false,
+				plugins: {
+					legend: {
+						display: false,
+					},
+				},
+				interaction: {
+					intersect: false,
+					mode: "index",
+				},
+				scales: {
+					y: {
+						grid: {
+							drawBorder: false,
+							display: false,
+							drawOnChartArea: false,
+							drawTicks: false,
+						},
+						ticks: {
+							display: false,
+						},
+					},
+					x: {
+						grid: {
+							drawBorder: false,
+							display: false,
+							drawOnChartArea: false,
+							drawTicks: false,
+						},
+						ticks: {
+							display: false,
+						},
+					},
+				},
+			},
+		};
+	}
+
+	const { data, options } = configs(chart.labels || [], chart.datasets || {});
+
+	const renderItems =
+		chart.labels && chart.datasets
+			? chart.labels.map((label, key) => (
+					<ReportsDoughnutChartItem
+						color={
+							chart.datasets.backgroundColors
+								? chart.datasets.backgroundColors[key]
+								: "dark"
+						}
+						title={label}
+						key={label}
+						percentage={`${
+							chart.datasets.data ? chart.datasets.data[key] : 0
+						}%`}
+						hasBorder={key !== chart.labels.length - 1}
+					/>
+			  ))
+			: null;
+
+	return (
+		<Card>
+			<SuiBox
+				display="flex"
+				justifyContent="space-between"
+				alignItems="center"
+				pt={2}
+				px={2}
+			>
+				<SuiTypography variant="h6">{title}</SuiTypography>
+				<Tooltip title={tooltip} placement="bottom" arrow>
+					<SuiButton
+						variant="outlined"
+						color="secondary"
+						size="small"
+						circular
+						iconOnly
+					>
+						<Icon>priority_high</Icon>
+					</SuiButton>
+				</Tooltip>
+			</SuiBox>
+			<SuiBox p={2}>
+				{useMemo(
+					() => (
+						<Grid container spacing={2}>
+							<Grid item xs={12} sm={5}>
+								<SuiBox
+									height="100%"
+									textAlign="center"
+									position="relative"
+								>
+									<SuiBox
+										height={{ xs: "65%", sm: "100%" }}
+										mt={{ xs: 6, sm: 0 }}
+									>
+										<Doughnut
+											data={data}
+											options={options}
+										/>
+									</SuiBox>
+									<SuiBox
+										mt={{ xs: 0, sm: -15.25 }}
+										position="relative"
+										top={{ xs: "-8.25rem", sm: 0 }}
+									>
+										<SuiTypography
+											variant="h4"
+											fontWeight="medium"
+										>
+											{count.number}
+										</SuiTypography>
+										<SuiTypography
+											variant="button"
+											color="text"
+											textTransform="uppercase"
+											fontWeight="medium"
+										>
+											{count.text}
+										</SuiTypography>
+									</SuiBox>
+								</SuiBox>
+							</Grid>
+							<Grid item xs={12} sm={7}>
+								{renderItems}
+							</Grid>
+						</Grid>
+					),
+					[chart]
+				)}
+			</SuiBox>
+		</Card>
+	);
+}
+
+// Setting default values for the props of ReportsDoughnutChart
+ReportsDoughnutChart.defaultProps = {
+	tooltip: "",
+};
+export const SmallRowChartExample = () => {
+	const thinBarChartData = {
+		labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+		datasets: {
+			label: "Watts",
+			data: [150, 230, 380, 220, 420, 200, 70, 500],
+		},
+	};
+	const reportsDoughnutChartData = {
+		labels: ["Living Room", "Kitchen", "Attic", "Garage", "Basement"],
+		datasets: {
+			label: "Consumption",
+			backgroundColors: [
+				"primary",
+				"secondary",
+				"info",
+				"success",
+				"warning",
+			],
+			data: [15, 20, 13, 32, 20],
+		},
 	};
 	return (
-		<Fragment>
-			<ThemeProvider theme={theme}>
-				<CssBaseline />
-
-				<PropsContext.Provider
-					value={{
-						controller,
-					}}
-				>
-					<Dashboard />
-				</PropsContext.Provider>
-			</ThemeProvider>
-		</Fragment>
+		<SuiBox mb={3}>
+			<Grid container spacing={3}>
+				<Grid item xs={12} lg={6}>
+					<ReportsDoughnutChart
+						title="Consumption by room"
+						count={{ number: 471.3, text: "whatts" }}
+						chart={reportsDoughnutChartData}
+						tooltip="See the consumption per room"
+					/>
+				</Grid>
+				<Grid item xs={12} sm={6} lg={3}>
+					<ThinBarChart
+						title="Consumption per day"
+						chart={thinBarChartData}
+					/>
+				</Grid>
+				<Grid item xs={12} sm={6} lg={3}>
+					{/* <TemperatureSliderExample /> */}
+					{/* <TemperatureSlider
+							handle1={{
+								value: temperature,
+								onChange: (v) => setTemperature(Math.round(v)),
+							}}
+							title="Device limit"
+							current={
+								<>
+									{temperature}
+									<SuiTypography
+										component="span"
+										variant="h4"
+										color="text"
+									>
+										&deg;C
+									</SuiTypography>
+								</>
+							}
+							label="temperature"
+							start={<>16&deg;C</>}
+							end={<>38&deg;C</>}
+							minValue={16}
+							maxValue={38}
+						/> */}
+				</Grid>
+			</Grid>
+		</SuiBox>
 	);
+};
+const SuiProgressRoot = styled(LinearProgress)(({ theme, ownerState }) => {
+	const { palette, functions } = theme;
+	const { color, value, variant } = ownerState;
+
+	const { text, gradients } = palette;
+	const { linearGradient } = functions;
+
+	// background value
+	let backgroundValue;
+
+	if (variant === "gradient") {
+		backgroundValue = gradients[color]
+			? linearGradient(gradients[color].main, gradients[color].state)
+			: linearGradient(gradients.info.main, gradients.info.state);
+	} else {
+		backgroundValue = palette[color]
+			? palette[color].main
+			: palette.info.main;
+	}
+
+	return {
+		"& .MuiLinearProgress-bar": {
+			background: backgroundValue,
+			width: `${value}%`,
+			color: text.main,
+		},
+	};
+});
+const SuiProgress = forwardRef(
+	({ variant, color, value, label, ...rest }, ref) => (
+		<>
+			{label && (
+				<SuiTypography
+					variant="button"
+					fontWeight="medium"
+					color="text"
+				>
+					{value}%
+				</SuiTypography>
+			)}
+			<SuiProgressRoot
+				{...rest}
+				ref={ref}
+				variant="determinate"
+				value={value}
+				ownerState={{ color, value, variant }}
+			/>
+		</>
+	)
+);
+
+// Setting default values for the props of SuiProgress
+SuiProgress.defaultProps = {
+	variant: "contained",
+	color: "info",
+	value: 0,
+	label: false,
+};
+
+function SocialItem({ icon, title, percentage }) {
+	const { socialMediaColors } = colors;
+	const { size } = typography;
+
+	return (
+		<SuiBox width="100%" py={1} mb={1}>
+			<SuiBox display="flex" justifyContent="space-between" mb={1}>
+				<SuiBox display="flex" alignItems="center" lineHeight={0}>
+					<SuiBox
+						mr={1}
+						color={socialMediaColors[icon.color].main}
+						fontSize={size.lg}
+					>
+						{icon.component}
+					</SuiBox>
+					<SuiTypography
+						variant="button"
+						fontWeight="medium"
+						color="text"
+					>
+						{title}
+					</SuiTypography>
+				</SuiBox>
+				<SuiTypography
+					variant="button"
+					fontWeight="medium"
+					color="text"
+				>
+					{percentage}%
+				</SuiTypography>
+			</SuiBox>
+			<SuiProgress value={percentage} color="dark" />
+		</SuiBox>
+	);
+}
+
+function Social() {
+	return (
+		<Card sx={{ height: "100%" }}>
+			<SuiBox
+				display="flex"
+				justifyContent="space-between"
+				alignItems="center"
+				pt={2}
+				px={2}
+			>
+				<SuiTypography variant="h6">Social</SuiTypography>
+				<Tooltip
+					title="See how much traffic do you get from social media"
+					placement="bottom"
+				>
+					<SuiButton
+						variant="outlined"
+						color="secondary"
+						size="small"
+						circular
+						iconOnly
+					>
+						<IconFromName name={"priority_high"}></IconFromName>
+						{/* <Icon>priority_high</Icon> */}
+					</SuiButton>
+				</Tooltip>
+			</SuiBox>
+			<SuiBox p={2}>
+				<SocialItem
+					icon={{
+						color: "facebook",
+						component: <IconFromName name={""} />,
+					}}
+					title="Facebook"
+					percentage={80}
+				/>
+				<SocialItem
+					icon={{
+						color: "twitter",
+						component: <IconFromName name={""} />,
+					}}
+					title="Facebook"
+					percentage={40}
+				/>
+				<SocialItem
+					icon={{
+						color: "reddit",
+						component: <IconFromName name={""} />,
+					}}
+					title="Reddit"
+					percentage={30}
+				/>
+				<SocialItem
+					icon={{
+						color: "youtube",
+						component: <IconFromName name={""} />,
+					}}
+					title="Youtube"
+					percentage={25}
+				/>
+				<SocialItem
+					icon={{
+						color: "instagram",
+						component: <IconFromName name={""} />,
+					}}
+					title="Instagram"
+					percentage={15}
+				/>
+			</SuiBox>
+		</Card>
+	);
+}
+
+export const SocialExample = () => {
+	return (
+		<SuiBox mb={3}>
+			<Grid container spacing={3}>
+				<Grid item xs={12} lg={6}>
+					<Social />
+				</Grid>
+				<Grid item xs={12} lg={6}>
+					<Pages />
+				</Grid>
+			</Grid>
+		</SuiBox>
+	);
+};
+function Separator() {
+	return (
+		<SuiBox position="relative" py={0.25}>
+			<Divider />
+			<SuiBox
+				bgColor="white"
+				position="absolute"
+				top="50%"
+				left="50%"
+				px={1.5}
+				lineHeight={1}
+				sx={{ transform: "translate(-50%, -60%)" }}
+			>
+				<SuiTypography
+					variant="button"
+					fontWeight="medium"
+					color="secondary"
+				>
+					or
+				</SuiTypography>
+			</SuiBox>
+		</SuiBox>
+	);
+}
+
+export const BasicSignIn = ({ signInClick }) => {
+	const [rememberMe, setRememberMe] = useState(false);
+
+	return (
+		<BasicLayout
+			title="Welcome!"
+			description="Use these awesome forms to login or create new account in your project for free."
+			image={""}
+		>
+			<Card>
+				<SuiBox p={3} mb={1} textAlign="center">
+					<SuiTypography variant="h5" fontWeight="medium">
+						Sign in
+					</SuiTypography>
+				</SuiBox>
+				<SuiBox mb={2}>{/* <Socials /> */}</SuiBox>
+				<SuiBox p={3}>
+					<SuiBox component="form" role="form">
+						<SuiBox mt={4} mb={1}>
+							<SuiButton
+								variant="gradient"
+								color="info"
+								fullWidth
+								onClick={signInClick}
+							>
+								sign in
+							</SuiButton>
+						</SuiBox>
+						<Separator />
+						<SuiBox mt={1} mb={3}>
+							<SuiButton
+								component={Link}
+								to="/authentication/sign-up/basic"
+								variant="gradient"
+								color="dark"
+								fullWidth
+							>
+								sign up
+							</SuiButton>
+						</SuiBox>
+					</SuiBox>
+				</SuiBox>
+			</Card>
+		</BasicLayout>
+	);
+};
+
+export const Sandbox = () => {
+	return (
+		<PayLayoutBase>
+			<SocialExample />
+			<SmallRowChartExample />
+			<HorizontalBarChartExample />
+			<RankingListExample />;
+		</PayLayoutBase>
+	);
+	// return <SocialExample />;
+	// return <SmallRowChartExample />;
+	// return <RankingListExample />;
+	// return <HorizontalBarChartExample />;
 };
 export default Sandbox;
