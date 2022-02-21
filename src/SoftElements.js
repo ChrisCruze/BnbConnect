@@ -140,6 +140,7 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import { DataGrid } from "@mui/x-data-grid";
 
 // import CircularSlider from "react-circular-slider-svg";
+import { Breadcrumbs as MuiBreadcrumbs } from "@mui/material";
 
 function Document({ color, size }) {
 	return (
@@ -6834,6 +6835,271 @@ DashboardNavbar.defaultProps = {
 	isMini: false,
 };
 
+function Breadcrumbs({ icon, title, route, light }) {
+	const routes = route.slice(0, -1);
+
+	return (
+		<SuiBox mr={{ xs: 0, xl: 8 }}>
+			<MuiBreadcrumbs
+				sx={{
+					"& .MuiBreadcrumbs-separator": {
+						color: ({ palette: { white, grey } }) =>
+							light ? white.main : grey[600],
+					},
+				}}
+			>
+				<Link to="/">
+					<SuiTypography
+						component="span"
+						variant="body2"
+						color={light ? "white" : "dark"}
+						opacity={light ? 0.8 : 0.5}
+						sx={{ lineHeight: 0 }}
+					>
+						<Icon>{icon}</Icon>
+					</SuiTypography>
+				</Link>
+				{routes.map((el) => (
+					<Link to={`/${el}`} key={el}>
+						<SuiTypography
+							component="span"
+							variant="button"
+							fontWeight="regular"
+							textTransform="capitalize"
+							color={light ? "white" : "dark"}
+							opacity={light ? 0.8 : 0.5}
+							sx={{ lineHeight: 0 }}
+						>
+							{el}
+						</SuiTypography>
+					</Link>
+				))}
+				<SuiTypography
+					variant="button"
+					fontWeight="regular"
+					textTransform="capitalize"
+					color={light ? "white" : "dark"}
+					sx={{ lineHeight: 0 }}
+				>
+					{title.replace("-", " ")}
+				</SuiTypography>
+			</MuiBreadcrumbs>
+			<SuiTypography
+				fontWeight="bold"
+				textTransform="capitalize"
+				variant="h6"
+				color={light ? "white" : "dark"}
+				noWrap
+			>
+				{title.replace("-", " ")}
+			</SuiTypography>
+		</SuiBox>
+	);
+}
+
+// Setting default values for the props of Breadcrumbs
+Breadcrumbs.defaultProps = {
+	light: false,
+};
+
+export function DashboardNavbarAlteryx({
+	controller,
+	absolute,
+	light,
+	isMini,
+	onAccountClick,
+	setController,
+	title,
+}) {
+	const [navbarType, setNavbarType] = useState();
+	//const [controller, dispatch] = useSoftUIController();
+	const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator } =
+		controller;
+	const [openMenu, setOpenMenu] = useState(false);
+	const route = useLocation().pathname.split("/").slice(1);
+
+	useEffect(() => {
+		// Setting the navbar type
+		if (fixedNavbar) {
+			setNavbarType("sticky");
+		} else {
+			setNavbarType("static");
+		}
+		// A function that sets the transparent state of the navbar.
+		function handleTransparentNavbar() {
+			//setTransparentNavbar(dispatch, (fixedNavbar && window.scrollY === 0) || !fixedNavbar);
+		}
+
+		/** 
+     The event listener that's calling the handleTransparentNavbar function when 
+     scrolling the window.
+    */
+		window.addEventListener("scroll", handleTransparentNavbar);
+
+		// Call the handleTransparentNavbar function to set the state with the initial value.
+		handleTransparentNavbar();
+
+		// Remove event listener on cleanup
+		return () =>
+			window.removeEventListener("scroll", handleTransparentNavbar);
+	}, [fixedNavbar]);
+
+	const handleMiniSidenav = () =>
+		setController({ ...controller, miniSidenav: !miniSidenav }); //console.log("Nav"); //setMiniSidenav(dispatch, !miniSidenav);
+	const handleConfiguratorOpen = () => console.log("Nav"); //setOpenConfigurator(dispatch, !openConfigurator);
+	const handleOpenMenu = (event) => console.log("Nav"); //setOpenMenu(event.currentTarget);
+	const handleCloseMenu = () => console.log("Nav"); //setOpenMenu(false);
+
+	// Render the notifications menu
+	const renderMenu = () => (
+		<Menu
+			anchorEl={openMenu}
+			anchorReference={null}
+			anchorOrigin={{
+				vertical: "bottom",
+				horizontal: "left",
+			}}
+			open={Boolean(openMenu)}
+			onClose={handleCloseMenu}
+			sx={{ mt: 2 }}
+		>
+			<NotificationItem
+				image={<img src={"team2"} alt="person" />}
+				title={["New message", "from Laur"]}
+				date="13 minutes ago"
+				onClick={handleCloseMenu}
+			/>
+		</Menu>
+	);
+
+	return (
+		<AppBar
+			position={absolute ? "absolute" : navbarType}
+			color="inherit"
+			sx={(theme) =>
+				navbar(theme, { transparentNavbar, absolute, light })
+			}
+		>
+			<Toolbar sx={(theme) => navbarContainer(theme)}>
+				<SuiBox
+					color="inherit"
+					mb={{ xs: 1, md: 0 }}
+					sx={(theme) => navbarRow(theme, { isMini })}
+				>
+					{/* <Breadcrumbs
+            icon="home"
+            title={route[route.length - 1]}
+            route={route}
+            light={light}
+          /> */}
+					<MenuIcon
+						fontSize="medium"
+						sx={navbarDesktopMenu}
+						onClick={handleMiniSidenav}
+					>
+						{miniSidenav ? "menu_open" : "menu"}
+					</MenuIcon>
+					<SuiBox mr={{ xs: 0, xl: 8 }} pl={2}>
+						<SuiTypography
+							fontWeight="bold"
+							textTransform="capitalize"
+							variant="h6"
+							color={"dark"}
+							noWrap
+						>
+							{title || ""}
+						</SuiTypography>
+					</SuiBox>
+				</SuiBox>
+				{isMini ? null : (
+					<SuiBox sx={(theme) => navbarRow(theme, { isMini })}>
+						<SuiBox pr={1}>
+							<SuiInput
+								placeholder="Type here..."
+								icon={{
+									component: "search",
+									direction: "left",
+								}}
+							/>
+						</SuiBox>
+						<SuiBox color={light ? "white" : "inherit"}>
+							<Link to="/authentication/sign-in/basic">
+								<IconButton
+									sx={navbarIconButton}
+									size="small"
+									onClick={onAccountClick}
+								>
+									<AccountBoxIcon
+										sx={({ palette: { dark, white } }) => ({
+											color: light
+												? white.main
+												: dark.main,
+										})}
+									>
+										account_circle
+									</AccountBoxIcon>
+									<SuiTypography
+										variant="button"
+										fontWeight="medium"
+										color={light ? "white" : "dark"}
+									></SuiTypography>
+								</IconButton>
+							</Link>
+							<IconButton
+								size="small"
+								color="inherit"
+								sx={navbarMobileMenu}
+								onClick={handleMiniSidenav}
+							>
+								<NotificationsIcon
+									className={
+										light ? "text-white" : "text-dark"
+									}
+								>
+									{miniSidenav ? "menu_open" : "menu"}
+								</NotificationsIcon>
+							</IconButton>
+							<IconButton
+								size="small"
+								color="inherit"
+								sx={navbarIconButton}
+								onClick={handleConfiguratorOpen}
+							>
+								<SettingsIcon>settings</SettingsIcon>
+							</IconButton>
+							<IconButton
+								size="small"
+								color="inherit"
+								sx={navbarIconButton}
+								aria-controls="notification-menu"
+								aria-haspopup="true"
+								variant="contained"
+								onClick={handleOpenMenu}
+							>
+								<NotificationsIcon
+									className={
+										light ? "text-white" : "text-dark"
+									}
+								>
+									notifications
+								</NotificationsIcon>
+							</IconButton>
+							{renderMenu()}
+						</SuiBox>
+					</SuiBox>
+				)}
+			</Toolbar>
+		</AppBar>
+	);
+}
+
+// Setting default values for the props of DashboardNavbar
+DashboardNavbarAlteryx.defaultProps = {
+	absolute: false,
+	light: false,
+	isMini: false,
+};
+
 export function FormField({ label, ...rest }) {
 	return (
 		<>
@@ -11211,6 +11477,7 @@ export const AlteryxPage = ({
 	routes,
 	imageCardConfig,
 	cardTilesConfig,
+	navTitle,
 }) => {
 	const [controller, setController] = useState({
 		miniSidenav: false,
@@ -11235,12 +11502,13 @@ export const AlteryxPage = ({
 					routes={routes}
 				/>
 				<DashboardLayout controller={controller}>
-					<DashboardNavbar
+					<DashboardNavbarAlteryx
 						controller={controller}
 						onAccountClick={() => {
 							console.log("clicik");
 						}}
 						setController={setController}
+						title={navTitle || ""}
 					/>
 					<SuiBox py={3}>
 						<SuiBox marginBottom={3}>
@@ -11656,9 +11924,9 @@ export const MTDDashboardPage = ({
           </Grid>
         </SuiBox> */}
 				<SuiBox marginBottom={3}>{renderMetrics()}</SuiBox>
-				<SuiBox marginBottom={3}>
-					<Stories storiesData={people} />
-				</SuiBox>
+				{/* <SuiBox marginBottom={3}>
+          <Stories storiesData={people} />
+        </SuiBox> */}
 
 				<SuiBox marginBottom={3}>{renderTables()}</SuiBox>
 
@@ -12818,6 +13086,82 @@ export const BnbDashboardPage = ({ title, subTitle }) => {
 							</SuiBox>
 						</Grid>
 					</Grid>
+				</SuiBox>
+			</SuiBox>
+		</PayLayoutBase>
+	);
+};
+
+const SurveyPageText = ({ title, text }) => {
+	return (
+		<Fragment>
+			<SuiBox mb={1}>
+				<SuiTypography variant="h3" fontWeight="bold">
+					{title}
+				</SuiTypography>
+			</SuiBox>
+			<SuiTypography variant="h5" fontWeight="regular" color="secondary">
+				{text}
+			</SuiTypography>
+		</Fragment>
+	);
+};
+
+const SurveyPageInput = ({ title, text, id, setValue, value }) => {
+	const onChange = ({ currentTarget }) => {
+		const inputValue = currentTarget.value;
+		setValue(inputValue);
+	};
+	return (
+		<Fragment>
+			<SuiBox mb={1}>
+				<SuiTypography variant="h3" fontWeight="bold">
+					{text}
+				</SuiTypography>
+			</SuiBox>
+			<SuiBox mt={3} mb={3}>
+				<SuiInput onChange={onChange} value={value} />
+			</SuiBox>
+		</Fragment>
+	);
+};
+export const BnbSurveyPage = ({ questionsArray }) => {
+	const [step, setStep] = useState(0);
+	// const [questionState, setQuestionState] = useState(questionsArray[0]);
+	function getQuestionContent() {
+		const questionDict = questionsArray[step];
+		switch (questionDict["type"]) {
+			case "text":
+				return <SurveyPageText {...questionDict} />;
+			case "input":
+				return <SurveyPageInput {...questionDict} />;
+			case "select":
+				return <SurveyPageInput {...questionDict} />;
+			default:
+				return null;
+		}
+	}
+
+	const BackNextButtons = () => (
+		<SuiBox mt={4}>
+			<SuiButton
+				variant="gradient"
+				color="dark"
+				onClick={() => {
+					setStep(step + 1);
+				}}
+			>
+				Next
+			</SuiButton>
+		</SuiBox>
+	);
+
+	return (
+		<PayLayoutBase>
+			<SuiBox py={3}>
+				<SuiBox mt={20} mb={3} textAlign="center">
+					{getQuestionContent()}
+					{BackNextButtons()}
 				</SuiBox>
 			</SuiBox>
 		</PayLayoutBase>
