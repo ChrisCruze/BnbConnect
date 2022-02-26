@@ -5,6 +5,7 @@ import { HashRouter, Route, Link, Switch } from "react-router-dom";
 import Dashboard from "./Dashboard";
 import Login from "./Login";
 import Survey from "./Survey";
+import Landing from "./Landing";
 
 class App extends React.Component {
 	render() {
@@ -16,6 +17,7 @@ class App extends React.Component {
 						<Route exact path="/Dashboard" component={Dashboard} />
 						<Route exact path="/Login" component={Login} />
 						<Route exact path="/Survey" component={Survey} />
+						<Route exact path="/Landing" component={Landing} />
 					</Switch>
 				</HashRouter>
 			</div>

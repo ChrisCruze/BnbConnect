@@ -32,3 +32,7 @@ Currently such a solution can be found in a house manual and Airbnb app. Putting
 -   Implement Authentication so that multiple hosts can configure the dashboard for their use case
 -   Figure out Firebase Read/Write Capability so that information can be written and read from the Dashboard
 -   Create backend script that will update the dashboard with key information
+
+
+# Reference Links
+- https://console.firebase.google.com/u/3/project/bnbdashboard/database/bnbdashboard-default-rtdb/data
