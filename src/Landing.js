@@ -24,23 +24,18 @@ const Landing = () => {
 	const getData = async () => {
 		const response = await axios.get("https://geolocation-db.com/json/");
 		const res = response.data;
-		console.log({ res });
-
 		const updatedDict = {
 			ip: res.IPv4,
 			city: String(res.city),
 			country: String(res.country_name),
 			latitude: res.latitude,
 			longitude: res.longitude,
-			zip_code: String(res.postal),
+			zipCode: String(res.postal),
 			state: String(res.state),
-			time_stamp: moment().format(),
+			timeStamp: moment().format(),
 			url: location.href,
 		};
-		console.log({ updatedDict });
-		//set(visitsRef, updatedDict);
 		push(visitsRef, updatedDict);
-		console.log(res.data);
 		setIP(res.data.IPv4);
 	};
 
