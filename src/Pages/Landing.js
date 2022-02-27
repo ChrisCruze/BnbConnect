@@ -1,11 +1,11 @@
 import React, { Fragment, useEffect, useState, useMemo } from "react";
 import { Link, useNavigate, useHistory } from "react-router-dom";
-import { auth, signInWithGoogle, database } from "./firebase";
+import { auth, signInWithGoogle, database } from "../firebase";
 import { ref, set, onValue, get, push } from "firebase/database";
 import { useAuthState } from "react-firebase-hooks/auth";
 import axios from "axios";
 
-import { BnbDashboardPage } from "./SoftElements";
+import { BnbDashboardPage } from "../SoftElements";
 import { gridRowIdsSelector } from "@mui/x-data-grid";
 function configGenerate() {
 	return {

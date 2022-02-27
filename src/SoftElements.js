@@ -114,8 +114,9 @@ import LinearProgress from "@mui/material/LinearProgress";
 import Modal from "@mui/material/Modal";
 
 import { Pie } from "react-chartjs-2";
-import { Bar } from "react-chartjs-2";
+import { Bar, HorizontalBar } from "react-chartjs-2";
 import { Doughnut } from "react-chartjs-2";
+import { Radar } from "react-chartjs-2";
 
 import { Col, Container, Jumbotron, Row } from "reactstrap";
 // import CountUp from "react-countup";
@@ -137,10 +138,99 @@ import StorageIcon from "@mui/icons-material/Storage";
 import DnsIcon from "@mui/icons-material/Dns";
 import KeyboardCommandKeyIcon from "@mui/icons-material/KeyboardCommandKey";
 import RefreshIcon from "@mui/icons-material/Refresh";
+
 import { DataGrid } from "@mui/x-data-grid";
 
 // import CircularSlider from "react-circular-slider-svg";
 import { Breadcrumbs as MuiBreadcrumbs } from "@mui/material";
+import rgba from "assets/theme/functions/rgba";
+
+// Dropzone components
+import Dropzone from "dropzone";
+
+// Dropzone styles
+import "dropzone/dist/dropzone.css";
+
+const SuiDropzoneRoot = styled(Box)(({ theme }) => {
+	const { palette, typography, borders, functions } = theme;
+
+	const { text, white, dark, inputColors } = palette;
+	const { size } = typography;
+	const { borderRadius, borderWidth } = borders;
+	const { rgba } = functions;
+
+	return {
+		display: "flex",
+		alignItems: "center",
+		border: `${borderWidth[1]} solid ${inputColors.borderColor.main} !important`,
+		borderRadius: borderRadius.md,
+
+		"& .dz-default": {
+			margin: "0 auto !important",
+		},
+
+		"& .dz-default .dz-button": {
+			color: `${text.main} !important`,
+			fontSize: `${size.sm} !important`,
+		},
+
+		"& .dz-preview .dz-details": {
+			color: `${dark.main} !important`,
+			opacity: "1 !important",
+
+			"& .dz-size span, & .dz-filename span": {
+				backgroundColor: `${rgba(white.main, 0.7)} !important`,
+			},
+		},
+
+		"& .dz-error-message": {
+			display: "none !important",
+		},
+
+		"& .dz-remove": {
+			color: `${dark.main} !important`,
+			textDecoration: "none",
+
+			"&:hover, &:focus": {
+				textDecoration: "none !important",
+			},
+		},
+	};
+});
+
+function SuiDropzone({ options }) {
+	const dropzoneRef = useRef();
+
+	useEffect(() => {
+		Dropzone.autoDiscover = false;
+
+		function createDropzone() {
+			return new Dropzone(dropzoneRef.current, { ...options });
+		}
+
+		function removeDropzone() {
+			if (Dropzone.instances.length > 0)
+				Dropzone.instances.forEach((dz) => dz.destroy());
+		}
+
+		createDropzone();
+
+		return () => removeDropzone();
+	}, [options]);
+
+	return (
+		<SuiDropzoneRoot
+			component="form"
+			action="/file-upload"
+			ref={dropzoneRef}
+			className="form-control dropzone"
+		>
+			<SuiBox className="fallback">
+				<SuiBox component="input" name="file" type="file" multiple />
+			</SuiBox>
+		</SuiDropzoneRoot>
+	);
+}
 
 function Document({ color, size }) {
 	return (
@@ -315,7 +405,7 @@ Cube.defaultProps = {
 	color: "dark",
 	size: "16px",
 };
-const IconFromName = ({ name }) => {
+export const IconFromName = ({ name }) => {
 	switch (name) {
 		case "storage":
 			return <StorageIcon />;
@@ -333,11 +423,46 @@ const IconFromName = ({ name }) => {
 			return <Message />;
 		case "refresh":
 			return <RefreshIcon />;
-
+		case "keyboard_arrow_down":
+			return <ArrowDropDownIcon />;
 		case "keyboardcommandkey":
 			return <KeyboardCommandKeyIcon />;
+		case "spaceship":
+			return <SpaceShip />;
+		case "creditcard":
+			return <CreditCard size="12px" />;
+		case "customersupport":
+			return <CustomerSupport size="12px" />;
+
 		default:
 			return <StorageIcon />;
+	}
+};
+
+const colorFromIndex = (i) => {
+	const colorsList = [
+		"dark",
+		"light",
+		"info",
+		"primary",
+		"secondary",
+		"success",
+		"warning",
+		"error",
+	];
+	return colorsList[i];
+};
+const colorFromNameIndex = ({ label, index }) => {
+	const name = label.toLowerCase();
+	switch (name) {
+		case "high":
+			return "error";
+		case "pending":
+			return "warning";
+		case "low":
+			return "light";
+		default:
+			return colorFromIndex(index);
 	}
 };
 export const PropsContext = React.createContext({});
@@ -4053,6 +4178,7 @@ MiniStatisticsCard.defaultProps = {
 }
 
 export function Stories({ storiesData }) {
+	console.log({ storiesData });
 	const { borderWidth } = borders;
 	// const storiesData = [
 	// 	{
@@ -4108,6 +4234,73 @@ export function Stories({ storiesData }) {
 		</Card>
 	);
 }
+
+export function StoriesSmall({ array }) {
+	const { borderWidth } = borders;
+	// const storiesData = [
+	// 	{
+	// 		image: team1,
+	// 		name: "Abbie W",
+	// 		color: "info",
+	// 	},
+	// ];
+
+	const renderStories = array.map(({ image, name, color }) => (
+		<Grid
+			key={name}
+			item
+			xs={4}
+			sm={3}
+			md={2}
+			lg={1}
+			sx={{ flex: "0 0 100%" }}
+		>
+			<SuiBox
+				borderRadius="50%"
+				width="0.625rem"
+				height="0.625rem"
+				display="flex"
+				justifyContent="center"
+				alignItems="center"
+				color="white"
+				mx="auto"
+				border={`${borderWidth[1]} solid ${colors[color].main}`}
+				sx={{ cursor: "pointer" }}
+			>
+				<SuiAvatar src={image} alt={name} title={name} />
+			</SuiBox>
+			<SuiBox mt={0.75} textAlign="center" lineHeight={1}>
+				<SuiTypography
+					variant="button"
+					color="text"
+					fontWeight="regular"
+				>
+					{/* {name} */}
+				</SuiTypography>
+			</SuiBox>
+		</Grid>
+	));
+	// sx={{ overflow: "scroll" }}
+	return (
+		<Card>
+			<SuiBox width="100%" pt={3} pb={2.5} px={3}>
+				<Grid container justifyContent="space-between" wrap="nowrap">
+					{renderStories}
+				</Grid>
+			</SuiBox>
+		</Card>
+	);
+}
+
+StoriesSmall.defaultProps = {
+	array: [
+		{
+			name: "test",
+			image: "images/badges/AdvancedMacros.png",
+			color: "info",
+		},
+	],
+};
 export function FooterOriginal({ company, links }) {
 	const { href, name } = company;
 	const { size } = typography;
@@ -4836,6 +5029,70 @@ export function SuiTableClick({ headers, rows, title, icon, iconClick }) {
 	);
 }
 
+export function SuiTableClickCore({ headers, rows, title, icon, iconClick }) {
+	const PageHeaders = (
+		<Fragment>
+			{headers.map((header, index) => {
+				return <PagesHeaderCell key={index}>{header}</PagesHeaderCell>;
+			})}
+		</Fragment>
+	);
+
+	const PageRows = (
+		<Fragment>
+			{rows.map((row, index) => {
+				return <PagesBodyCell key={index} rows={row} />;
+			})}
+		</Fragment>
+	);
+	return (
+		<SuiBox py={1} px={2}>
+			<TableContainer sx={{ boxShadow: "none", maxHeight: 300 }}>
+				<Table>
+					<SuiBox component="thead">
+						<TableRow>{PageHeaders}</TableRow>
+					</SuiBox>
+					<TableBody>{PageRows}</TableBody>
+				</Table>
+			</TableContainer>
+		</SuiBox>
+	);
+}
+
+export function SuiTableClickDropdown({
+	headers,
+	rows,
+	title,
+	icon,
+	iconClick,
+	options,
+	selectedValue,
+}) {
+	return (
+		<BoxWithDropdown
+			options={options}
+			selectedValue={selectedValue}
+			title={title}
+		>
+			<SuiTableClickCore headers={headers} rows={rows} />
+		</BoxWithDropdown>
+	);
+}
+SuiTableClickDropdown.defaultProps = {
+	headers: ["a"],
+	rows: [["a"]],
+	title: "Pages",
+	selectedValue: "Selected",
+	options: [
+		{
+			name: "Option 1",
+			func: () => {
+				console.log("click");
+			},
+		},
+	],
+};
+
 export function Pages() {
 	return (
 		<Card>
@@ -4846,7 +5103,7 @@ export function Pages() {
 				pt={2}
 				px={2}
 			>
-				<SuiTypography variant="h6">Pages</SuiTypography>
+				<SuiTypography variant="h6">Trainings</SuiTypography>
 				<Tooltip
 					title="Data is based from sessions and is 100% accurate"
 					placement="left"
@@ -4933,6 +5190,544 @@ export function Pages() {
 		</Card>
 	);
 }
+export function BoxWithDropdownExample({ children }) {
+	const [menu, setMenu] = useState(null);
+
+	const openMenu = (event) => setMenu(event.currentTarget);
+	const closeMenu = () => setMenu(null);
+
+	const renderMenu = (
+		<Menu
+			anchorEl={menu}
+			anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+			transformOrigin={{ vertical: "top", horizontal: "left" }}
+			open={Boolean(menu)}
+			onClose={closeMenu}
+			keepMounted
+		>
+			<MenuItem onClick={closeMenu}>Status: Paid</MenuItem>
+			<MenuItem onClick={closeMenu}>Status: Refunded</MenuItem>
+			<MenuItem onClick={closeMenu}>Status: Canceled</MenuItem>
+			<Divider sx={{ margin: "0.5rem 0" }} />
+			<MenuItem onClick={closeMenu}>
+				<SuiTypography
+					variant="button"
+					color="error"
+					fontWeight="regular"
+				>
+					Remove Filter
+				</SuiTypography>
+			</MenuItem>
+		</Menu>
+	);
+	return (
+		<Card>
+			<SuiBox
+				display="flex"
+				justifyContent="space-between"
+				alignItems="center"
+				pt={2}
+				px={2}
+			>
+				<SuiTypography variant="h6">Pages</SuiTypography>
+				<SuiButton
+					variant={menu ? "contained" : "outlined"}
+					color="dark"
+					onClick={openMenu}
+				>
+					filters&nbsp;
+					<IconFromName name={"keyboard_arrow_down"}></IconFromName>
+					{/* <Icon>keyboard_arrow_down</Icon> */}
+				</SuiButton>
+				{renderMenu}
+			</SuiBox>
+			<SuiBox py={1} px={2}>
+				{children}
+			</SuiBox>
+		</Card>
+	);
+}
+
+export function BoxWithDropdown({ children, options, selectedValue, title }) {
+	const [menu, setMenu] = useState(null);
+	const openMenu = (event) => setMenu(event.currentTarget);
+	const closeMenu = () => setMenu(null);
+	const renderMenu = (
+		<Menu
+			anchorEl={menu}
+			anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+			transformOrigin={{ vertical: "top", horizontal: "left" }}
+			open={Boolean(menu)}
+			onClose={closeMenu}
+			keepMounted
+		>
+			{options.map((optionDict, key) => (
+				<MenuItem
+					key={key}
+					onClick={() => {
+						optionDict.func(optionDict);
+						closeMenu();
+					}}
+				>
+					{optionDict.label || ""}
+				</MenuItem>
+			))}
+		</Menu>
+	);
+	return (
+		<Card>
+			<SuiBox
+				display="flex"
+				justifyContent="space-between"
+				alignItems="center"
+				pt={2}
+				px={2}
+			>
+				{/* <SuiTypography variant="h6">{title}</SuiTypography> */}
+				<SuiTypography variant="h6">
+					{selectedValue.label}&nbsp;
+				</SuiTypography>
+
+				<SuiButton
+					variant="outlined"
+					color="black"
+					size="small"
+					circular
+					iconOnly
+					onClick={openMenu}
+				>
+					<IconFromName name={"keyboard_arrow_down"} />
+					{/* <Icon sx={{ fontWeight: "bold" }}>done</Icon> */}
+				</SuiButton>
+
+				{renderMenu}
+			</SuiBox>
+			<SuiBox py={1} px={2}>
+				{children}
+			</SuiBox>
+		</Card>
+	);
+}
+
+BoxWithDropdown.defaultProps = {
+	title: "Pages",
+	selectedValue: "Selected",
+	options: [
+		{
+			name: "Option 1",
+			func: () => {
+				console.log("click");
+			},
+		},
+	],
+};
+
+export const ChartBoxWithDropdown = ({
+	chart,
+	options,
+	selectedValue,
+	title,
+}) => {
+	return (
+		<BoxWithDropdown
+			options={options}
+			selectedValue={selectedValue}
+			title={title}
+		>
+			<PieChartFromData chart={chart} />
+		</BoxWithDropdown>
+	);
+};
+
+export const chartDataTransfromFromArray = ({ array, field, label }) => {
+	const groupedDict = _.groupBy(array, field);
+	const labels = Object.keys(groupedDict);
+	const data = _.map(labels, (label) => groupedDict[label].length);
+	//const colorsList = ["info", "primary", "dark", "secondary", "primary"];
+	//const backgroundColors = _.map(labels, (label, index) => colorsList[index]);
+	const backgroundColors = _.map(labels, (label, index) =>
+		colorFromNameIndex({ label, index })
+	);
+
+	const chart = { labels, datasets: { label, data, backgroundColors } };
+	return chart;
+};
+
+export const barChartDataTransfromFromArray = ({ array, field, label }) => {
+	const groupedDict = _.groupBy(array, field);
+	const labelsList = Object.keys(groupedDict);
+	const dataArray = _.map(labelsList, (label, index) => {
+		return { label, value: groupedDict[label].length, index };
+	});
+	const dataArraySorted = _.sortBy(dataArray, "value");
+	dataArraySorted.reverse();
+
+	const labels = _.map(dataArraySorted, "label");
+	const data = _.map(dataArraySorted, "value");
+
+	const backgroundColors = _.map(labels, (label, index) =>
+		colorFromNameIndex({ label, index })
+	);
+	const chart = { labels, datasets: [{ label, data, backgroundColors }] };
+	return chart;
+};
+
+export const stackedBarChartDataTransfromFromArray = ({
+	array,
+	field,
+	label,
+	stackField,
+}) => {
+	const stackFieldDict = _.groupBy(array, stackField);
+	const stackFieldValues = Object.keys(stackFieldDict);
+
+	const groupedDict = _.groupBy(array, field);
+	const labelsList = Object.keys(groupedDict);
+	const dataArray = _.map(labelsList, (label, index) => {
+		return { label, value: groupedDict[label].length, index };
+	});
+	const dataArraySorted = _.sortBy(dataArray, "value");
+	dataArraySorted.reverse();
+	const labels = _.map(dataArraySorted, "label");
+
+	const datasets = _.map(stackFieldValues, (stackFieldValue, num) => {
+		return {
+			stack: "stackID",
+			label: stackFieldValue,
+			color: colorFromNameIndex({ index: num, label: stackFieldValue }), //rOptions[num],
+			data: _.map(
+				labels,
+				(label) =>
+					groupedDict[label].filter(function (D) {
+						return D[stackField] == stackFieldValue;
+					}).length
+			),
+		};
+	});
+
+	// const data = _.map(labels, (label) => groupedDict[label].length);
+	const chart = {
+		labels,
+		datasets: datasets,
+	};
+	return chart;
+};
+ChartBoxWithDropdown.defaultProps = {
+	title: "Pages",
+	selectedValue: "Selected",
+	options: [
+		{
+			name: "Option 1",
+			func: () => {
+				console.log("click");
+			},
+		},
+	],
+};
+export const PieChartBoxWithDropdownState = ({
+	array,
+	options,
+	// selectedValueInitial,
+	title,
+	onClick,
+}) => {
+	const [selectedValue, setSelectedValue] = useState(options[0]);
+	const optionswithState = _.map(options, (D) => {
+		return {
+			...D,
+			func: (optionDict) => {
+				setSelectedValue(optionDict);
+				console.log({ optionDict });
+			},
+		};
+	});
+
+	const chart = chartDataTransfromFromArray({
+		array,
+		field: selectedValue.field,
+		label: selectedValue.label,
+	});
+	//VerticalBarChart
+	return (
+		<BoxWithDropdown
+			options={optionswithState}
+			selectedValue={selectedValue}
+			title={title}
+		>
+			<PieChart
+				chart={chart}
+				onClick={(label) => {
+					onClick({
+						field: selectedValue.field,
+						label,
+						value: label,
+					});
+				}}
+			/>
+			{/* <VerticalBarChart chart={chart} /> */}
+		</BoxWithDropdown>
+	);
+};
+PieChartBoxWithDropdownState.defaultProps = {
+	title: "Pages",
+	onClick: ({ field, label, value }) => {
+		console.log({ field, label, value });
+	},
+	array: [
+		{ type: "Story", category: "one" },
+		{ type: "Story", category: "one" },
+		{ type: "Epic", category: "one" },
+		{ type: "Epic", category: "one" },
+	],
+	options: [
+		{
+			field: "type",
+			label: "Type",
+		},
+		{
+			field: "category",
+			label: "Category",
+		},
+	],
+};
+
+export const HorizontalChartBoxWithDropdownState = ({
+	array,
+	options,
+	// selectedValueInitial,
+	title,
+	onClick,
+	height,
+}) => {
+	const [selectedValue, setSelectedValue] = useState(options[0]);
+	const optionswithState = _.map(options, (D) => {
+		return {
+			...D,
+			func: (optionDict) => {
+				setSelectedValue(optionDict);
+				console.log({ optionDict });
+			},
+		};
+	});
+
+	const chart = barChartDataTransfromFromArray({
+		array,
+		field: selectedValue.field,
+		label: selectedValue.label,
+	});
+	console.log({ chart });
+	//VerticalBarChart
+	return (
+		<BoxWithDropdown
+			options={optionswithState}
+			selectedValue={selectedValue}
+			title={title}
+		>
+			{/* <HorizontalBarChart 
+      
+      /> */}
+			<HorizontalBarChart
+				chart={chart}
+				height={height}
+				onClick={(label) => {
+					onClick({
+						field: selectedValue.field,
+						label,
+						value: label,
+					});
+				}}
+			/>
+			{/* <VerticalBarChart chart={chart} /> */}
+		</BoxWithDropdown>
+	);
+};
+HorizontalChartBoxWithDropdownState.defaultProps = {
+	height: "10.125rem",
+	title: "Pages",
+	onClick: ({ field, label, value }) => {
+		console.log({ field, label, value });
+	},
+	array: [
+		{ type: "Story", category: "one" },
+		{ type: "Story", category: "one" },
+		{ type: "Epic", category: "one" },
+		{ type: "Epic", category: "one" },
+	],
+	options: [
+		{
+			field: "type",
+			label: "Type",
+		},
+		{
+			field: "category",
+			label: "Category",
+		},
+	],
+};
+
+export const HorizontalStackedChartBoxWithDropdownState = ({
+	array,
+	options,
+	// selectedValueInitial,
+	title,
+	onClick,
+	height,
+	stackField,
+}) => {
+	const [selectedValue, setSelectedValue] = useState(options[0]);
+	const optionswithState = _.map(options, (D) => {
+		return {
+			...D,
+			func: (optionDict) => {
+				setSelectedValue(optionDict);
+				console.log({ optionDict });
+			},
+		};
+	});
+
+	const chart = stackedBarChartDataTransfromFromArray({
+		array,
+		field: selectedValue.field,
+		label: selectedValue.label,
+		stackField,
+	});
+	console.log({ chart });
+	//VerticalBarChart
+	return (
+		<BoxWithDropdown
+			options={optionswithState}
+			selectedValue={selectedValue}
+			title={title}
+		>
+			{/* <HorizontalBarChart 
+      
+      /> */}
+			<HorizontalStackedBarChart
+				chart={chart}
+				height={height}
+				onClick={(label) => {
+					onClick({
+						field: selectedValue.field,
+						label,
+						value: label,
+					});
+				}}
+			/>
+			{/* <VerticalBarChart chart={chart} /> */}
+		</BoxWithDropdown>
+	);
+};
+HorizontalStackedChartBoxWithDropdownState.defaultProps = {
+	height: "10.125rem",
+	title: "Pages",
+	stackField: "category",
+	onClick: ({ field, label, value }) => {
+		console.log({ field, label, value });
+	},
+	array: [
+		{ type: "Story", category: "A" },
+
+		{ type: "Story", category: "A" },
+		{ type: "Story", category: "A" },
+		{ type: "Story", category: "B" },
+		{ type: "Epic", category: "B" },
+		{ type: "Epic", category: "B" },
+	],
+	options: [
+		{
+			field: "type",
+			label: "Type",
+		},
+		{
+			field: "category",
+			label: "Category",
+		},
+	],
+};
+export const ThinBarChartBoxWithDropdownState = ({
+	array,
+	options,
+	// selectedValueInitial,
+	title,
+	onClick,
+	//chart,
+}) => {
+	const [selectedValue, setSelectedValue] = useState(options[0]);
+	const optionswithState = _.map(options, (D) => {
+		return {
+			...D,
+			func: (optionDict) => {
+				setSelectedValue(optionDict);
+				console.log({ optionDict });
+			},
+		};
+	});
+
+	const chart = chartDataTransfromFromArray({
+		array,
+		field: selectedValue.field,
+		label: selectedValue.label,
+	});
+	//VerticalBarChart
+	return (
+		<BoxWithDropdown
+			options={optionswithState}
+			selectedValue={selectedValue}
+			title={title}
+		>
+			<ThinBarChart
+				chart={chart}
+				onClick={(label) => {
+					onClick({
+						field: selectedValue.field,
+						label,
+						value: label,
+					});
+				}}
+			/>
+			{/* <PieChart
+        chart={chart}
+        onClick={(label) => {
+          onClick({
+            field: selectedValue.field,
+            label,
+            value: label,
+          });
+        }}
+      /> */}
+			{/* <VerticalBarChart chart={chart} /> */}
+		</BoxWithDropdown>
+	);
+};
+ThinBarChartBoxWithDropdownState.defaultProps = {
+	title: "Pages",
+	onClick: ({ field, label, value }) => {
+		console.log({ field, label, value });
+	},
+	chart: {
+		labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+		datasets: {
+			label: "Watts",
+			data: [150, 230, 380, 220, 420, 200, 70, 500],
+		},
+	},
+	array: [
+		{ type: "Story", category: "one" },
+		{ type: "Story", category: "one" },
+		{ type: "Epic", category: "one" },
+		{ type: "Epic", category: "one" },
+	],
+	options: [
+		{
+			field: "type",
+			label: "Type",
+		},
+		{
+			field: "category",
+			label: "Category",
+		},
+	],
+};
 
 function DataTableHeadCell({ width, children, sorted, align, ...rest }) {
 	const { light } = colors;
@@ -10687,7 +11482,7 @@ function pieConfigs(labels, datasets) {
 	};
 }
 
-export function PieChart({ title, description, height, chart }) {
+export function PieChart1({ title, description, height, chart }) {
 	const { data, options } = pieConfigs(
 		chart.labels || [],
 		chart.datasets || {}
@@ -10729,7 +11524,7 @@ export function PieChart({ title, description, height, chart }) {
 }
 
 // Setting default values for the props of PieChart
-PieChart.defaultProps = {
+PieChart1.defaultProps = {
 	title: "",
 	description: "",
 	height: "19.125rem",
@@ -11465,7 +12260,7 @@ const PageTextCards = ({ array }) => {
 	);
 };
 
-const AlteryxPageCards = ({ headerCard, cardsArray }) => {
+const AlteryxPageCards = ({ headerCard, cardsArray, badgesArray }) => {
 	return (
 		<Grid container spacing={3}>
 			<Grid item xs={12}>
@@ -11475,6 +12270,7 @@ const AlteryxPageCards = ({ headerCard, cardsArray }) => {
           icon={{ component: "iconSunCloud", text: "cloudy" }}
         /> */}
 				<ColorCard title={headerCard.title} />
+				<StoriesSmall array={badgesArray} />
 			</Grid>
 			<PageTextCards array={cardsArray} />
 			{/* <Grid item xs={12} md={6}>
@@ -11521,7 +12317,11 @@ export const AlteryxPage = ({
 	imageCardConfig,
 	cardTilesConfig,
 	navTitle,
+	pieChartConfig,
+	thinBarChartConfig,
 }) => {
+	//example: badgesArray =  [{name:'test',image:alteryxURLDirectoryDefine()+"images\badges\AdvancedMacros.png",color:'blue'}]
+
 	const [controller, setController] = useState({
 		miniSidenav: false,
 		transparentSidenav: true,
@@ -11564,24 +12364,27 @@ export const AlteryxPage = ({
 								</Grid>
 							</Grid>
 						</SuiBox>
+
 						<SuiBox marginBottom={3}>
 							<Grid container spacing={3}>
 								<Grid item xs={12} lg={6}>
-									<DefaultTextCard
-										title={"Upcoming Trainings"}
-										subTitle={""}
-									/>
+									<Pages />
+									{/* <DefaultTextCard title={"Upcoming Trainings"} subTitle={""} /> */}
 								</Grid>
 								<Grid item xs={12} sm={6} lg={3}>
-									<DefaultTextCard
-										title={"External Help Links"}
-										subTitle={""}
+									<ThinBarChartBoxWithDropdownState
+										{...thinBarChartConfig}
 									/>
+
+									{/* <DefaultTextCard
+                    title={"External Help Links"}
+                    subTitle={""}
+                  /> */}
 								</Grid>
 								<Grid item xs={12} sm={6} lg={3}>
-									<DefaultTextCard
-										title={"Demographics"}
-										subTitle={""}
+									{/* <DefaultTextCard title={"Demographics"} subTitle={""} /> */}
+									<PieChartBoxWithDropdownState
+										{...pieChartConfig}
 									/>
 								</Grid>
 							</Grid>
@@ -11831,19 +12634,19 @@ const HeaderTabs = ({ title, subTitle, imageSrc, tabsArray }) => {
 			}}
 		>
 			<Grid container spacing={3} alignItems="center">
-				<Grid item>
-					<SuiAvatar
-						src={
-							imageSrc ||
-							sharepointURLDirectoryDefine() +
-								"dependencies/code/png/mtd_icon.png"
-						}
-						alt="profile-image"
-						variant="rounded"
-						size="xl"
-						shadow="sm"
-					/>
-				</Grid>
+				{/* <Grid item>
+          <SuiAvatar
+            src={
+              imageSrc ||
+              sharepointURLDirectoryDefine() +
+                "dependencies/code/png/mtd_icon.png"
+            }
+            alt="profile-image"
+            variant="rounded"
+            size="xl"
+            shadow="sm"
+          />
+        </Grid> */}
 				<Grid item>
 					<SuiBox height="100%" mt={0.5} lineHeight={1}>
 						<SuiTypography variant="h5" fontWeight="medium">
@@ -11892,11 +12695,15 @@ export const MTDDashboardPage = ({
 	jiraDataTables,
 	headerTabsConfig,
 	configurationDict,
+	pieChartConfig,
+	thinBarChartConfig,
+	horizontalBarChartConfig,
+	horizontalStackedBarChartConfig,
 }) => {
 	const renderMetrics = () => (
 		<Grid container spacing={3}>
 			{metrics.map((tableDict, key) => (
-				<Grid item key={key} xs={12} sm={6} lg={3}>
+				<Grid item key={key} xs={12} sm={6} lg={2}>
 					<MiniStatisticsCard
 						bgColor="white"
 						title={{
@@ -11970,6 +12777,30 @@ export const MTDDashboardPage = ({
 				{/* <SuiBox marginBottom={3}>
           <Stories storiesData={people} />
         </SuiBox> */}
+				<SuiBox marginBottom={3}>
+					<Grid container spacing={3}>
+						<Grid item xs={12} lg={3}>
+							<PieChartBoxWithDropdownState {...pieChartConfig} />
+						</Grid>
+						<Grid item xs={12} lg={3}>
+							<HorizontalChartBoxWithDropdownState
+								{...horizontalBarChartConfig}
+							/>
+						</Grid>
+
+						<Grid item xs={12} lg={3}>
+							<HorizontalStackedChartBoxWithDropdownState
+								{...horizontalStackedBarChartConfig}
+							/>
+						</Grid>
+
+						<Grid item xs={12} lg={3}>
+							<ThinBarChartBoxWithDropdownState
+								{...thinBarChartConfig}
+							/>
+						</Grid>
+					</Grid>
+				</SuiBox>
 
 				<SuiBox marginBottom={3}>{renderTables()}</SuiBox>
 
@@ -11997,6 +12828,10 @@ export const MTDDashboardPage = ({
 			/>
 		</PayLayoutBase>
 	);
+};
+
+MTDDashboardPage.defaultProps = {
+	metrics: [{ title: "Stories", metric: 100 }],
 };
 export const AirTablePageBaseRead = ({ title, dataTables }) => {
 	const [tab, setTab] = useState(0);
@@ -12611,7 +13446,92 @@ function horizontalBarConfigs(labels, datasets) {
 	};
 }
 
-function HorizontalBarChart({ title, description, height, chart }) {
+export function HorizontalBarChart({
+	title,
+	description,
+	height,
+	chart,
+	onClick,
+}) {
+	function configs(labels, datasets) {
+		return {
+			data: {
+				labels,
+				datasets: [...datasets],
+			},
+			options: {
+				indexAxis: "y",
+				responsive: true,
+				maintainAspectRatio: false,
+				plugins: {
+					// legend: {
+					// 	position: "right",
+					// },
+					// title: {
+					// 	display: true,
+					// 	text: "Chart.js Horizontal Bar Chart",
+					// },
+					legend: {
+						display: false,
+						onClick: function (evt, element) {
+							console.log({ evt, element });
+						},
+					},
+				},
+				onClick: function (evt, element) {
+					if (element.length > 0) {
+						const elementIndex = element[0]._index;
+						const labelSelected = labels[elementIndex];
+
+						onClick(labelSelected);
+						// console.log({ element, elementIndex, dataSelected });
+					}
+				},
+				// scales: {
+				//   y: {
+				//     grid: {
+				//       drawBorder: false,
+				//       display: false,
+				//       drawOnChartArea: true,
+				//       drawTicks: false,
+				//       borderDash: [5, 5],
+				//     },
+				//     ticks: {
+				//       display: false,
+				//       padding: 10,
+				//       color: "#9ca2b7",
+				//       font: {
+				//         size: 11,
+				//         family: typography.fontFamily,
+				//         style: "normal",
+				//         lineHeight: 2,
+				//       },
+				//     },
+				//   },
+				//   x: {
+				//     grid: {
+				//       drawBorder: false,
+				//       display: false,
+				//       drawOnChartArea: true,
+				//       drawTicks: true,
+				//     },
+				//     ticks: {
+				//       display: true,
+				//       color: "#9ca2b7",
+				//       padding: 10,
+				//       font: {
+				//         size: 11,
+				//         family: typography.fontFamily,
+				//         style: "normal",
+				//         lineHeight: 2,
+				//       },
+				//     },
+				//   },
+				// },
+			},
+		};
+	}
+
 	const chartDatasets = chart.datasets
 		? chart.datasets.map((dataset) => ({
 				...dataset,
@@ -12626,10 +13546,7 @@ function HorizontalBarChart({ title, description, height, chart }) {
 		  }))
 		: [];
 
-	const { data, options } = horizontalBarConfigs(
-		chart.labels || [],
-		chartDatasets
-	);
+	const { data, options } = configs(chart.labels || [], chartDatasets);
 	const renderChart = (
 		<SuiBox p={2}>
 			{title || description ? (
@@ -12651,10 +13568,15 @@ function HorizontalBarChart({ title, description, height, chart }) {
 					</SuiBox>
 				</SuiBox>
 			) : null}
+
+			{/* <SuiBox height={height}>
+				<Bar data={data} options={options} />
+			</SuiBox> */}
+
 			{useMemo(
 				() => (
 					<SuiBox height={height}>
-						<Bar data={data} options={options} />
+						<HorizontalBar data={data} options={options} />
 					</SuiBox>
 				),
 				[chart, height]
@@ -12670,6 +13592,191 @@ HorizontalBarChart.defaultProps = {
 	title: "",
 	description: "",
 	height: "19.125rem",
+	onClick: (label) => {
+		console.log({ label });
+	},
+	chart: {
+		labels: ["16-20", "21-25", "26-30", "31-36", "36-42", "42+"],
+		datasets: [
+			{
+				label: "Sales by age",
+				color: "dark",
+				data: [15, 20, 12, 60, 20, 15],
+			},
+		],
+	},
+};
+
+export function HorizontalStackedBarChart({
+	title,
+	description,
+	height,
+	chart,
+	onClick,
+}) {
+	function configs(labels, datasets) {
+		return {
+			data: {
+				labels,
+				datasets: [...datasets],
+			},
+			options: {
+				indexAxis: "y",
+				responsive: true,
+				maintainAspectRatio: false,
+				plugins: {
+					// legend: {
+					// 	position: "right",
+					// },
+					// title: {
+					// 	display: true,
+					// 	text: "Chart.js Horizontal Bar Chart",
+					// },
+					legend: {
+						display: false,
+					},
+				},
+				onClick: function (evt, element) {
+					if (element.length > 0) {
+						const elementIndex = element[0]._index;
+						const labelSelected = labels[elementIndex];
+						console.log({
+							element,
+							elementIndex,
+							labels,
+							labelSelected,
+						});
+
+						onClick(labelSelected);
+						// console.log({ element, elementIndex, dataSelected });
+					}
+				},
+				scales: {
+					y: {
+						grid: {
+							drawBorder: false,
+							display: true,
+							drawOnChartArea: true,
+							drawTicks: false,
+							borderDash: [5, 5],
+						},
+						ticks: {
+							display: true,
+							padding: 10,
+							color: "#9ca2b7",
+							font: {
+								size: 11,
+								family: typography.fontFamily,
+								style: "normal",
+								lineHeight: 2,
+							},
+						},
+					},
+					x: {
+						grid: {
+							drawBorder: false,
+							display: false,
+							drawOnChartArea: true,
+							drawTicks: true,
+						},
+						ticks: {
+							display: true,
+							color: "#9ca2b7",
+							padding: 10,
+							font: {
+								size: 11,
+								family: typography.fontFamily,
+								style: "normal",
+								lineHeight: 2,
+							},
+						},
+					},
+				},
+			},
+		};
+	}
+
+	const chartDatasets = chart.datasets
+		? chart.datasets.map((dataset) => ({
+				...dataset,
+				weight: 5,
+				borderWidth: 0,
+				borderRadius: 4,
+				backgroundColor: colors[dataset.color]
+					? colors[dataset.color || "dark"].main
+					: colors.dark.main,
+				fill: true,
+				maxBarThickness: 35,
+		  }))
+		: [];
+
+	const { data, options } = configs(chart.labels || [], chartDatasets);
+	console.log({ data, options });
+	const renderChart = (
+		<SuiBox p={2}>
+			{title || description ? (
+				<SuiBox px={description ? 1 : 0} pt={description ? 1 : 0}>
+					{title && (
+						<SuiBox mb={1}>
+							<SuiTypography variant="h6">{title}</SuiTypography>
+						</SuiBox>
+					)}
+					<SuiBox mb={2}>
+						<SuiTypography
+							component="div"
+							variant="button"
+							fontWeight="regular"
+							color="text"
+						>
+							{description}
+						</SuiTypography>
+					</SuiBox>
+				</SuiBox>
+			) : null}
+
+			{/* <SuiBox height={height}>
+				<Bar data={data} options={options} />
+			</SuiBox> */}
+
+			{useMemo(
+				() => (
+					<SuiBox height={height}>
+						<HorizontalBar data={data} options={options} />
+					</SuiBox>
+				),
+				[chart, height]
+			)}
+		</SuiBox>
+	);
+
+	return title || description ? <Card>{renderChart}</Card> : renderChart;
+}
+
+// Setting default values for the props of HorizontalBarChart
+HorizontalStackedBarChart.defaultProps = {
+	title: "",
+	description: "",
+	height: "19.125rem",
+	onClick: (label) => {
+		console.log({ label });
+	},
+	chart: {
+		labels: ["16-20", "21-25", "26-30", "31-36", "36-42", "42+"],
+		datasets: [
+			{
+				stack: "1",
+				label: "Sales by age",
+				color: "dark",
+				data: [15, 20, 12, 60, 20, 15],
+			},
+			{
+				stack: "1",
+				label: "Sales by type",
+				color: "light",
+				data: [15, 20, 12, 60, 20, 15],
+			},
+		],
+	},
 };
 
 export const HorizontalBarChartExample = ({ title, subTitle }) => {
@@ -13029,6 +14136,413 @@ function RankingList({ title, rightTitle, array }) {
 		</Card>
 	);
 }
+function PieChart({ title, description, height, chart, onClick }) {
+	function configs(labels, datasets) {
+		const backgroundColors = [];
+
+		if (datasets.backgroundColors) {
+			datasets.backgroundColors.forEach((color) =>
+				gradients[color]
+					? backgroundColors.push(gradients[color].state)
+					: backgroundColors.push(dark.main)
+			);
+		} else {
+			backgroundColors.push(dark.main);
+		}
+
+		return {
+			data: {
+				labels,
+				datasets: [
+					{
+						label: datasets.label,
+						weight: 9,
+						cutout: 0,
+						tension: 0.9,
+						pointRadius: 2,
+						borderWidth: 2,
+						backgroundColor: backgroundColors,
+						fill: false,
+						data: datasets.data,
+					},
+				],
+			},
+			options: {
+				responsive: true,
+				maintainAspectRatio: false,
+				plugins: {
+					legend: {
+						display: false,
+					},
+				},
+				interaction: {
+					intersect: false,
+					mode: "index",
+				},
+				onClick: function (evt, element) {
+					if (element.length > 0) {
+						const elementIndex = element[0]._index;
+						const labelSelected = labels[elementIndex];
+						onClick(labelSelected);
+						// console.log({ element, elementIndex, dataSelected });
+					}
+				},
+				scales: {
+					y: {
+						grid: {
+							drawBorder: false,
+							display: false,
+							drawOnChartArea: false,
+							drawTicks: false,
+						},
+						ticks: {
+							display: false,
+						},
+					},
+					x: {
+						grid: {
+							drawBorder: false,
+							display: false,
+							drawOnChartArea: false,
+							drawTicks: false,
+						},
+						ticks: {
+							display: false,
+						},
+					},
+				},
+			},
+		};
+	}
+
+	const { data, options } = configs(chart.labels || [], chart.datasets || {});
+
+	const renderChart = (
+		<SuiBox p={2}>
+			{title || description ? (
+				<SuiBox px={description ? 1 : 0} pt={description ? 1 : 0}>
+					{title && (
+						<SuiBox mb={1}>
+							<SuiTypography variant="h6">{title}</SuiTypography>
+						</SuiBox>
+					)}
+					<SuiBox mb={2}>
+						<SuiTypography
+							component="div"
+							variant="button"
+							fontWeight="regular"
+							color="text"
+						>
+							{description}
+						</SuiTypography>
+					</SuiBox>
+				</SuiBox>
+			) : null}
+			{useMemo(
+				() => (
+					<SuiBox height={height}>
+						<Pie data={data} options={options} />
+					</SuiBox>
+				),
+				[chart, height]
+			)}
+		</SuiBox>
+	);
+
+	return title || description ? <Card>{renderChart}</Card> : renderChart;
+}
+
+// Setting default values for the props of PieChart
+PieChart.defaultProps = {
+	title: "",
+	description: "",
+	height: "10.125rem",
+	onClick: (label) => {
+		console.log({ label });
+	},
+	chart: {
+		labels: ["Facebook", "Direct", "Organic", "Referral"],
+		datasets: {
+			label: "Projects",
+			backgroundColors: [
+				"info",
+				"primary",
+				"dark",
+				"secondary",
+				"primary",
+			],
+			data: [15, 20, 12, 60],
+		},
+	},
+};
+
+function DefaultDoughnutChart({ title, description, height, chart }) {
+	function configs(labels, datasets, cutout = 60) {
+		const backgroundColors = [];
+
+		if (datasets.backgroundColors) {
+			datasets.backgroundColors.forEach((color) => {
+				if (gradients[color]) {
+					if (color === "info") {
+						backgroundColors.push(gradients.info.main);
+					} else {
+						backgroundColors.push(gradients[color].state);
+					}
+				} else {
+					backgroundColors.push(dark.main);
+				}
+			});
+		} else {
+			backgroundColors.push(dark.main);
+		}
+
+		return {
+			data: {
+				labels,
+				datasets: [
+					{
+						label: datasets.label,
+						weight: 9,
+						cutout,
+						tension: 0.9,
+						pointRadius: 2,
+						borderWidth: 2,
+						backgroundColor: backgroundColors,
+						fill: false,
+						data: datasets.data,
+					},
+				],
+			},
+			options: {
+				responsive: true,
+				maintainAspectRatio: false,
+				plugins: {
+					legend: {
+						display: false,
+					},
+				},
+				interaction: {
+					intersect: false,
+					mode: "index",
+				},
+				scales: {
+					y: {
+						grid: {
+							drawBorder: false,
+							display: false,
+							drawOnChartArea: false,
+							drawTicks: false,
+						},
+						ticks: {
+							display: false,
+						},
+					},
+					x: {
+						grid: {
+							drawBorder: false,
+							display: false,
+							drawOnChartArea: false,
+							drawTicks: false,
+						},
+						ticks: {
+							display: false,
+						},
+					},
+				},
+			},
+		};
+	}
+	const { data, options } = configs(
+		chart.labels || [],
+		chart.datasets || {},
+		chart.cutout
+	);
+
+	const renderChart = (
+		<SuiBox p={2}>
+			{title || description ? (
+				<SuiBox px={description ? 1 : 0} pt={description ? 1 : 0}>
+					{title && (
+						<SuiBox mb={1}>
+							<SuiTypography variant="h6">{title}</SuiTypography>
+						</SuiBox>
+					)}
+					<SuiBox mb={2}>
+						<SuiTypography
+							component="div"
+							variant="button"
+							fontWeight="regular"
+							color="text"
+						>
+							{description}
+						</SuiTypography>
+					</SuiBox>
+				</SuiBox>
+			) : null}
+			{useMemo(
+				() => (
+					<SuiBox height={height}>
+						<Doughnut data={data} options={options} />
+					</SuiBox>
+				),
+				[chart, height]
+			)}
+		</SuiBox>
+	);
+
+	return title || description ? <Card>{renderChart}</Card> : renderChart;
+}
+
+// Setting default values for the props of DefaultDoughnutChart
+DefaultDoughnutChart.defaultProps = {
+	title: "",
+	description: "",
+	height: "19.125rem",
+	chart: {
+		labels: ["Creative Tim", "Github", "Bootsnipp", "Dev.to", "Codeinwp"],
+		datasets: {
+			label: "Projects",
+			backgroundColors: ["info", "dark", "error", "secondary", "primary"],
+			data: [15, 20, 12, 60, 20],
+		},
+	},
+};
+
+function RadarChart({ title, description, chart }) {
+	function configs(labels, datasets) {
+		return {
+			data: {
+				labels,
+				datasets: [...datasets],
+			},
+			options: {
+				plugins: {
+					legend: {
+						display: false,
+					},
+				},
+			},
+		};
+	}
+
+	const chartDatasets = chart.datasets
+		? chart.datasets.map((dataset) => ({
+				...dataset,
+				backgroundColor: colors[dataset.color]
+					? rgba(colors[dataset.color || "dark"].main, 0.2)
+					: rgba(colors.dark.main, 0.2),
+		  }))
+		: [];
+
+	const { data, options } = configs(chart.labels || [], chartDatasets);
+
+	const renderChart = (
+		<SuiBox p={2}>
+			{title || description ? (
+				<SuiBox px={description ? 1 : 0} pt={description ? 1 : 0}>
+					{title && (
+						<SuiBox mb={1}>
+							<SuiTypography variant="h6">{title}</SuiTypography>
+						</SuiBox>
+					)}
+					<SuiBox mb={2}>
+						<SuiTypography
+							component="div"
+							variant="button"
+							fontWeight="regular"
+							color="text"
+						>
+							{description}
+						</SuiTypography>
+					</SuiBox>
+				</SuiBox>
+			) : null}
+			{useMemo(
+				() => (
+					<SuiBox p={6}>
+						<Radar data={data} options={options} />
+					</SuiBox>
+				),
+				[chart]
+			)}
+		</SuiBox>
+	);
+
+	return title || description ? <Card>{renderChart}</Card> : renderChart;
+}
+
+// Setting default values for the props of RadarChart
+RadarChart.defaultProps = {
+	title: "",
+	description: "",
+	chart: {
+		labels: [
+			"English",
+			"Maths",
+			"Physics",
+			"Chemistry",
+			"Biology",
+			"History",
+		],
+		datasets: [
+			{
+				label: "Student A",
+				color: "dark",
+				data: [65, 75, 70, 80, 60, 80],
+				borderDash: [5, 5],
+			},
+			{
+				label: "Student B",
+				color: "info",
+				data: [54, 65, 60, 70, 70, 75],
+			},
+		],
+	},
+};
+
+export const DoughnutChartExample = () => {
+	return (
+		<Fragment>
+			<SuiBox mb={3}>
+				<Grid container spacing={3}>
+					<Grid item xs={12} md={6}>
+						<DefaultDoughnutChart
+							title="Doughnut chart"
+							// chart={defaultDoughnutChartData}
+						/>
+					</Grid>
+					<Grid item xs={12} md={3}>
+						<PieChart
+							title="Pie chart"
+							//chart={pieChartData}
+						/>
+					</Grid>
+				</Grid>
+			</SuiBox>
+			<SuiBox mb={3}>
+				<Grid container spacing={3}>
+					<Grid item xs={12} md={6}>
+						<RadarChart
+							title="Radar chart"
+							// chart={radarChartData}
+						/>
+					</Grid>
+					<Grid item xs={12} md={6}>
+						{/* <PolarChart title="Polar chart" chart={polarChartData} /> */}
+					</Grid>
+				</Grid>
+			</SuiBox>
+		</Fragment>
+	);
+};
+
+export const PieChartFromData = ({ chart }) => {
+	return (
+		<Fragment>
+			<PieChart title="Pie chart" chart={chart} />
+		</Fragment>
+	);
+};
 
 export const RankingListExample = () => {
 	const transactionsData = [
@@ -13403,7 +14917,7 @@ export const TemperatureSliderExample = () => {
 	);
 };
 
-function ThinBarChart({ color, title, height, chart }) {
+function ThinBarChart({ color, title, height, chart, onClick }) {
 	function configs(color, labels, datasets) {
 		return {
 			data: {
@@ -13435,6 +14949,15 @@ function ThinBarChart({ color, title, height, chart }) {
 				interaction: {
 					intersect: false,
 					mode: "index",
+				},
+				onClick: function (evt, element) {
+					if (element.length > 0) {
+						const elementIndex = element[0]._index;
+						const labelSelected = labels[elementIndex];
+
+						onClick(labelSelected);
+						// console.log({ element, elementIndex, dataSelected });
+					}
 				},
 				scales: {
 					y: {
@@ -13528,9 +15051,19 @@ function ThinBarChart({ color, title, height, chart }) {
 
 // Setting default values for the props of ThinBarChart
 ThinBarChart.defaultProps = {
+	onClick: (label) => {
+		console.log({ label });
+	},
+	chart: {
+		labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+		datasets: {
+			label: "Watts",
+			data: [150, 230, 380, 220, 420, 200, 70, 500],
+		},
+	},
 	color: "dark",
 	title: "",
-	height: "12.5rem",
+	height: "10.125rem",
 };
 
 function ReportsDoughnutChartItem({ color, title, percentage, hasBorder }) {
@@ -14076,13 +15609,160 @@ export const BasicSignIn = ({ signInClick }) => {
 	);
 };
 
+export const BnbHomePage = ({ sideTitleLogo, sideTitle, routes, navTitle }) => {
+	//example: badgesArray =  [{name:'test',image:alteryxURLDirectoryDefine()+"images\badges\AdvancedMacros.png",color:'blue'}]
+
+	const [controller, setController] = useState({
+		miniSidenav: false,
+		transparentSidenav: true,
+		sidenavColor: "info",
+		transparentNavbar: true,
+		fixedNavbar: true,
+		openConfigurator: false,
+		direction: "ltr",
+		layout: "dashboard",
+	});
+	return (
+		<PropsContext.Provider value={{}}>
+			<ThemeProvider theme={theme}>
+				<CssBaseline />
+				<Sidenav
+					controller={controller}
+					setController={setController}
+					color={controller.sidenavColor}
+					brand={sideTitleLogo}
+					brandName={sideTitle}
+					routes={routes}
+				/>
+				<DashboardLayout controller={controller}>
+					<DashboardNavbarAlteryx
+						controller={controller}
+						onAccountClick={() => {
+							console.log("clicik");
+						}}
+						setController={setController}
+						title={navTitle || ""}
+					/>
+
+					<SuiBox>
+						<SuiBox
+							display="flex"
+							flexDirection="column"
+							justifyContent="flex-end"
+							height="100%"
+						>
+							<SuiBox
+								mb={1}
+								ml={0.5}
+								mt={3}
+								lineHeight={0}
+								display="inline-block"
+							>
+								<SuiTypography
+									component="label"
+									variant="caption"
+									fontWeight="bold"
+								>
+									Starting Files
+								</SuiTypography>
+							</SuiBox>
+							<SuiDropzone options={{ addRemoveLinks: true ,success:(file)=>{console.log({file})}}} />
+						</SuiBox>
+					</SuiBox>
+
+					<SuiBox py={3}>
+						<SuiBox marginBottom={3}>
+							<Grid container spacing={3}>
+								<Grid item xs={12} xl={7}></Grid>
+								<Grid item xs={12} xl={5}></Grid>
+							</Grid>
+						</SuiBox>
+					</SuiBox>
+				</DashboardLayout>
+			</ThemeProvider>
+		</PropsContext.Provider>
+	);
+};
+BnbHomePage.defaultProps = {
+	sideTitleLogo: "",
+	sideTitle: "sideTitle",
+	routes: [
+		{ type: "divider", key: "divider-1" },
+		{ type: "title", title: "Docs", key: "title-docs" },
+		{
+			type: "collapse",
+			name: "Basic",
+			key: "basic",
+			icon: <IconFromName name={"spaceship"} />,
+			collapse: [
+				{
+					name: "Getting Started",
+					key: "getting-started",
+					collapse: [
+						{
+							name: "Overview",
+							key: "overview",
+							href: "https://www.creative-tim.com/learning-lab/react/overview/soft-ui-dashboard/",
+						},
+					],
+				},
+				{
+					name: "Foundation",
+					key: "foundation",
+					collapse: [
+						{
+							name: "Colors",
+							key: "colors",
+							href: "https://www.creative-tim.com/learning-lab/react/colors/soft-ui-dashboard/",
+						},
+					],
+				},
+			],
+		},
+		{
+			type: "collapse",
+			name: "Components",
+			key: "components",
+			icon: <IconFromName name={"customersupport"} />,
+
+			collapse: [
+				{
+					name: "Alerts",
+					key: "alerts",
+					href: "https://www.creative-tim.com/learning-lab/react/alerts/soft-ui-dashboard/",
+				},
+				{
+					name: "Typography",
+					key: "typography",
+					href: "https://www.creative-tim.com/learning-lab/react/typography/soft-ui-dashboard/",
+				},
+			],
+		},
+		{
+			type: "collapse",
+			name: "Change Log",
+			key: "changelog",
+			href: "https://github.com/creativetimofficial/ct-soft-ui-dashboard-pro-material-ui/blob/main/CHANGELOG.md",
+			icon: <IconFromName name={"creditcard"} />,
+
+			noCollapse: true,
+		},
+	],
+	navTitle: "",
+};
 export const Sandbox = () => {
 	return (
 		<PayLayoutBase>
-			<SocialExample />
-			<SmallRowChartExample />
-			<HorizontalBarChartExample />
-			<RankingListExample />;
+			<SuiDropzone />
+
+			{/* <HorizontalStackedChartBoxWithDropdownState /> */}
+			{/* <HorizontalStackedBarChart />
+      <PieChartBoxWithDropdownState />
+      <DoughnutChartExample />
+      <SocialExample />
+      <SmallRowChartExample />
+      <HorizontalBarChartExample />
+      <RankingListExample />; */}
 		</PayLayoutBase>
 	);
 	// return <SocialExample />;

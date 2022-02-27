@@ -1,9 +1,9 @@
 import React, { Fragment, useEffect, useState, useMemo } from "react";
 import { Link, useNavigate, useHistory } from "react-router-dom";
-import { auth, signInWithGoogle, database } from "./firebase";
+import { auth, signInWithGoogle, database } from "../firebase";
 import { ref, set, onValue, get } from "firebase/database";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { BnbDashboardPage, BnbSurveyPage } from "./SoftElements";
+import { BnbDashboardPage, BnbSurveyPage } from "../SoftElements";
 
 const Survey = () => {
 	const [user, loading, error] = useAuthState(auth);

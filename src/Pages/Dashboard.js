@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState, useMemo } from "react";
 
-import { BnbDashboardPage } from "./SoftElements";
+import { BnbDashboardPage } from "../SoftElements";
 function configGenerate() {
 	return {
 		title: "Bnb Dashboard",
