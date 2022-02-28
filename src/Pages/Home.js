@@ -12,6 +12,9 @@ import {
 
 const Home = () => {
 	const [user, loading, error] = useAuthState(auth);
+	const [userDict, setUserDict] = useState({ uid: "NULL" });
+	const [reservationData, setReservationData] = useState([]);
+
 	let history = useHistory();
 	useEffect(() => {
 		if (loading) {
@@ -19,10 +22,29 @@ const Home = () => {
 		}
 		if (user == null) {
 			history.push("/Login");
+		} else {
+			console.log({ user });
+			setUserDict(user);
 		}
 	}, [user, loading]);
-	var userDict = user || { uid: "NULL" };
-	console.log({ userDict });
+	const userDataRef = ref(
+		database,
+		"reservation_data/" + String(userDict.uid) + "/"
+	);
+	const readArray = ({ array }) => {
+		set(userDataRef, array);
+	};
+
+	useEffect(() => {
+		onValue(userDataRef, (snapshot) => {
+			const data = snapshot.val();
+			if (data) {
+				console.log({ data });
+				setReservationData(data);
+			}
+		});
+	}, [user]);
+
 	const routes = [
 		{
 			type: "collapse",
@@ -57,11 +79,73 @@ const Home = () => {
 			noCollapse: true,
 		},
 	];
+	const pieChartConfig = {
+		title: "Pages",
+		onClick: ({ field, label, value }) => {
+			console.log({ field, label, value });
+		},
+		array: reservationData,
+		options: [
+			{
+				field: "status",
+				label: "Status",
+			},
+			{
+				field: "number_of_nights",
+				label: "Number of Nights",
+			},
+		],
+		height: "15.125rem",
+	};
+	const horizontalBarChartConfig = {
+		title: "Pages",
+		onClick: ({ field, label, value }) => {
+			console.log({ field, label, value });
+		},
+		array: reservationData,
+		options: [
+			{
+				field: "listing",
+				label: "Listing",
+			},
+			{
+				field: "number_of_nights",
+				label: "Number of Nights",
+			},
+		],
+		height: "15.125rem",
+	};
+
+	const metrics = [
+		{ title: "# Reservations", metric: reservationData.length },
+		{
+			title: "Amount",
+			metric: format_cell_number(
+				_.reduce(
+					reservationData,
+					function (memo, num) {
+						var r =
+							memo +
+							(parseFloat(num["earnings"].replace("$", "")) || 0);
+						return r;
+					},
+					0
+				)
+			),
+		},
+	];
+
 	return (
 		<BnbHomePage
 			routes={routes}
 			navTitle={userDict.displayName}
 			sideTitle={"Bnb Apps"}
+			readArray={readArray}
+			metrics={metrics}
+			pieChartConfig={pieChartConfig}
+			horizontalBarChartConfig={horizontalBarChartConfig}
+			horizontalStackedBarChartConfig={pieChartConfig}
+			thinBarChartConfig={pieChartConfig}
 		/>
 	);
 };

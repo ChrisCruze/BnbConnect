@@ -1,4 +1,11 @@
-import React, { Fragment, useEffect, useState, useMemo, useRef } from "react";
+import React, {
+	Fragment,
+	useEffect,
+	useState,
+	useMemo,
+	useRef,
+	useCallback,
+} from "react";
 import { forwardRef, createContext, useContext } from "react";
 
 // @mui material components
@@ -150,6 +157,7 @@ import Dropzone from "dropzone";
 
 // Dropzone styles
 import "dropzone/dist/dropzone.css";
+import { useDropzone } from "react-dropzone";
 
 const SuiDropzoneRoot = styled(Box)(({ theme }) => {
 	const { palette, typography, borders, functions } = theme;
@@ -5425,6 +5433,7 @@ ChartBoxWithDropdown.defaultProps = {
 	],
 };
 export const PieChartBoxWithDropdownState = ({
+	height,
 	array,
 	options,
 	// selectedValueInitial,
@@ -5456,6 +5465,7 @@ export const PieChartBoxWithDropdownState = ({
 		>
 			<PieChart
 				chart={chart}
+				height={height}
 				onClick={(label) => {
 					onClick({
 						field: selectedValue.field,
@@ -5473,6 +5483,8 @@ PieChartBoxWithDropdownState.defaultProps = {
 	onClick: ({ field, label, value }) => {
 		console.log({ field, label, value });
 	},
+	height: "10.125rem",
+
 	array: [
 		{ type: "Story", category: "one" },
 		{ type: "Story", category: "one" },
@@ -5650,6 +5662,7 @@ export const ThinBarChartBoxWithDropdownState = ({
 	// selectedValueInitial,
 	title,
 	onClick,
+	height,
 	//chart,
 }) => {
 	const [selectedValue, setSelectedValue] = useState(options[0]);
@@ -5676,6 +5689,7 @@ export const ThinBarChartBoxWithDropdownState = ({
 			title={title}
 		>
 			<ThinBarChart
+				height={height}
 				chart={chart}
 				onClick={(label) => {
 					onClick({
@@ -5704,6 +5718,8 @@ ThinBarChartBoxWithDropdownState.defaultProps = {
 	onClick: ({ field, label, value }) => {
 		console.log({ field, label, value });
 	},
+	height: "10.125rem",
+
 	chart: {
 		labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
 		datasets: {
@@ -15609,9 +15625,45 @@ export const BasicSignIn = ({ signInClick }) => {
 	);
 };
 
-export const BnbHomePage = ({ sideTitleLogo, sideTitle, routes, navTitle }) => {
+export const BnbHomePage = ({
+	sideTitleLogo,
+	sideTitle,
+	routes,
+	navTitle,
+	readArray,
+	pieChartConfig,
+	horizontalBarChartConfig,
+	horizontalStackedBarChartConfig,
+	thinBarChartConfig,
+	metrics,
+}) => {
 	//example: badgesArray =  [{name:'test',image:alteryxURLDirectoryDefine()+"images\badges\AdvancedMacros.png",color:'blue'}]
-
+	const renderMetrics = () => (
+		<Grid container spacing={3}>
+			{metrics.map((tableDict, key) => (
+				<Grid item key={key} xs={12} sm={6} lg={2}>
+					<MiniStatisticsCard
+						bgColor="white"
+						title={{
+							text: tableDict.title || "",
+							fontWeight: "bold",
+						}}
+						count={tableDict.metric || ""}
+						percentage={{
+							color: "error",
+							text: "",
+						}}
+						icon={<IconFromName name={tableDict.icon || ""} />}
+					/>
+				</Grid>
+			))}
+			<Grid item xs={12} sm={6} lg={3}>
+				<SuiBox>
+					<BackgroundBlogCardNoButton {...status} />
+				</SuiBox>
+			</Grid>
+		</Grid>
+	);
 	const [controller, setController] = useState({
 		miniSidenav: false,
 		transparentSidenav: true,
@@ -15643,31 +15695,55 @@ export const BnbHomePage = ({ sideTitleLogo, sideTitle, routes, navTitle }) => {
 						setController={setController}
 						title={navTitle || ""}
 					/>
+					<SuiBox marginBottom={3}>{renderMetrics()}</SuiBox>
 
+					<SuiBox marginBottom={3}>
+						<Grid container spacing={3}>
+							<Grid item xs={12} lg={3}>
+								<PieChartBoxWithDropdownState
+									{...pieChartConfig}
+								/>
+							</Grid>
+							<Grid item xs={12} lg={3}>
+								<HorizontalChartBoxWithDropdownState
+									{...horizontalBarChartConfig}
+								/>
+							</Grid>
+
+							<Grid item xs={12} lg={3}>
+								<HorizontalStackedChartBoxWithDropdownState
+									{...horizontalStackedBarChartConfig}
+								/>
+							</Grid>
+
+							<Grid item xs={12} lg={3}>
+								<ThinBarChartBoxWithDropdownState
+									{...thinBarChartConfig}
+								/>
+							</Grid>
+						</Grid>
+					</SuiBox>
 					<SuiBox>
-						<SuiBox
-							display="flex"
-							flexDirection="column"
-							justifyContent="flex-end"
-							height="100%"
-						>
-							<SuiBox
-								mb={1}
-								ml={0.5}
-								mt={3}
-								lineHeight={0}
-								display="inline-block"
-							>
-								<SuiTypography
-									component="label"
-									variant="caption"
-									fontWeight="bold"
-								>
-									Starting Files
-								</SuiTypography>
-							</SuiBox>
-							<SuiDropzone options={{ addRemoveLinks: true ,success:(file)=>{console.log({file})}}} />
-						</SuiBox>
+						<Grid container spacing={3}>
+							<Grid item xs={12} md={6}>
+								<Card>
+									<SuiBox
+										p={3}
+										textAlign="center"
+										lineHeight={1.25}
+									>
+										<SuiTypography
+											variant="h6"
+											fontWeight="bold"
+											textTransform="capitalize"
+										>
+											Drop
+										</SuiTypography>
+										<MyDropzone readArray={readArray} />
+									</SuiBox>
+								</Card>
+							</Grid>
+						</Grid>
 					</SuiBox>
 
 					<SuiBox py={3}>
@@ -15685,7 +15761,11 @@ export const BnbHomePage = ({ sideTitleLogo, sideTitle, routes, navTitle }) => {
 };
 BnbHomePage.defaultProps = {
 	sideTitleLogo: "",
+	metrics: [{ title: "test", metric: "metric" }],
 	sideTitle: "sideTitle",
+	readArray: ({ array }) => {
+		console.log({ array });
+	},
 	routes: [
 		{ type: "divider", key: "divider-1" },
 		{ type: "title", title: "Docs", key: "title-docs" },
@@ -15750,9 +15830,61 @@ BnbHomePage.defaultProps = {
 	],
 	navTitle: "",
 };
+
+export function MyDropzone({ readArray }) {
+	const onDrop = useCallback((acceptedFiles) => {
+		var reader = new FileReader();
+		reader.onload = function (e) {
+			// Use reader.result
+			const csv_data = reader.result;
+			const results = Papa.parse(csv_data);
+			const text_lines = results.data;
+			const key_names_raw = text_lines[0];
+			const key_names = _.map(key_names_raw, (i) => {
+				return String(
+					i
+						.replace(" ", "_")
+						.replace(" ", "_")
+						.replace(" ", "_")
+						.replace(" ", "_")
+						.replace("#", "number")
+						.toLowerCase()
+						.trim()
+				);
+			});
+
+			var array = [];
+			text_lines.forEach(function (entry, i) {
+				var singleObj = {};
+				key_names.forEach(function (kn, num_index) {
+					singleObj[kn] = entry[num_index];
+				});
+				array.push(singleObj);
+			});
+
+			readArray({ array: array.slice(0, array.length - 1) });
+		};
+		reader.readAsText(acceptedFiles[0]);
+	}, []);
+	const { getRootProps, getInputProps, isDragActive } = useDropzone({
+		onDrop,
+	});
+
+	return (
+		<div {...getRootProps()}>
+			<input {...getInputProps()} />
+			{isDragActive ? (
+				<p>Drop the files here ...</p>
+			) : (
+				<p>Drag 'n' drop some files here, or click to select files</p>
+			)}
+		</div>
+	);
+}
 export const Sandbox = () => {
 	return (
 		<PayLayoutBase>
+			<MyDropzone />
 			<SuiDropzone />
 
 			{/* <HorizontalStackedChartBoxWithDropdownState /> */}
